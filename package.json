@@ -1,0 +1,52 @@
+{
+  "name": "epic-react-router",
+  "version": "0.0.0",
+  "description": "MobX react router.",
+  "main": "dist/index.js",
+  "source": "index.ts",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "padua watch",
+    "test": "padua test"
+  },
+  "prettier": "padua/configuration/.prettierrc.json",
+  "eslintConfig": {
+    "extends": "./node_modules/padua/configuration/eslint.cjs",
+    "plugins": [
+      "@babel/plugin-proposal-decorators"
+    ]
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "./node_modules/padua/configuration/tsconfig.json"
+      }
+    },
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest",
+      "^.+\\.jsx?$": [
+        "babel-jest",
+        {
+          "configFile": "./node_modules/padua/configuration/.babelrc"
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "padua": "^0.0.9"
+  },
+  "engines": {
+    "node": ">= 13.2.0"
+  },
+  "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.10.5",
+    "history": "^5.0.0",
+    "mobx": "^5.15.6",
+    "mobx-react": "^6.3.0",
+    "query-string": "^6.13.1",
+    "react": "^16.13.1"
+  }
+}
