@@ -2,8 +2,9 @@
   "name": "epic-react-router",
   "version": "0.0.0",
   "description": "MobX react router.",
+  "repository": "github:tobua/epic-react-router",
   "main": "dist/index.js",
-  "source": "index.ts",
+  "source": "index.tsx",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
@@ -42,11 +43,12 @@
     "node": ">= 13.2.0"
   },
   "dependencies": {
-    "@babel/plugin-proposal-decorators": "^7.10.5",
     "history": "^5.0.0",
+    "query-string": "^6.13.1"
+  },
+  "peerDependencies": {
     "mobx": "^5.15.6",
     "mobx-react": "^6.3.0",
-    "query-string": "^6.13.1",
     "react": "^16.13.1"
   }
 }

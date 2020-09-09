@@ -1,34 +1,12 @@
 {
-  "scripts": {
-    "build": "papua build",
-    "lint": "papua lint",
-    "start": "papua start",
-    "test": "papua test",
-    "update": "papua update"
-  },
-  "prettier": "papua/configuration/.prettierrc.json",
-  "eslintConfig": {
-    "extends": "./node_modules/papua/configuration/eslint.cjs"
-  },
-  "jest": {
-    "globals": {
-      "ts-jest": {
-        "tsConfig": "./node_modules/papua/configuration/tsconfig.json"
-      }
-    },
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest",
-      "^.+\\.jsx?$": [
-        "babel-jest",
-        {
-          "configFile": "./node_modules/papua/configuration/.babelrc"
-        }
-      ]
-    }
-  },
   "dependencies": {
-    "papua": "^0.0.0",
+    "papua": "^0.0.5",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "mobx": "^5.15.6",
+    "mobx-react": "^6.3.0"
+  },
+  "localDependencies": {
+    "epic-react-router": ".."
   }
 }

@@ -46,7 +46,7 @@ export const Router = new (class {
   }
 })()
 
-const Pages = observer(() => {
+export const Page = observer(() => {
   const { route, parameters } = Router
 
   let Component = Overview
