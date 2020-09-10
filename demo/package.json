@@ -1,10 +1,10 @@
 {
   "dependencies": {
+    "mobx": "^5.15.6",
+    "mobx-react": "^6.3.0",
     "papua": "^0.0.5",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "mobx": "^5.15.6",
-    "mobx-react": "^6.3.0"
+    "react-dom": "^16.13.1"
   },
   "localDependencies": {
     "epic-react-router": ".."

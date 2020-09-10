@@ -15,10 +15,7 @@
   },
   "prettier": "padua/configuration/.prettierrc.json",
   "eslintConfig": {
-    "extends": "./node_modules/padua/configuration/eslint.cjs",
-    "plugins": [
-      "@babel/plugin-proposal-decorators"
-    ]
+    "extends": "./node_modules/padua/configuration/eslint.cjs"
   },
   "jest": {
     "globals": {
@@ -36,15 +33,17 @@
       ]
     }
   },
-  "devDependencies": {
-    "padua": "^0.0.9"
-  },
-  "engines": {
-    "node": ">= 13.2.0"
-  },
   "dependencies": {
     "history": "^5.0.0",
     "query-string": "^6.13.1"
+  },
+  "devDependencies": {
+    "@types/history": "^4.7.7",
+    "@types/react": "^16.9.49",
+    "mobx": "^5.15.6",
+    "mobx-react": "^6.3.0",
+    "padua": "^0.0.9",
+    "react": "^16.13.1"
   },
   "peerDependencies": {
     "mobx": "^5.15.6",
