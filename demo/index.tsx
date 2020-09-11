@@ -18,8 +18,8 @@ Router.setPages(
 render(
   <div>
     <button onClick={() => Router.back()}>←</button>
-    <button onClick={() => Router.back()}>→</button>
-    <p>React App</p>
+    <button onClick={() => Router.forward()}>→</button>
+    <h1>epic-react-router</h1>
     <button onClick={() => Router.go('overview')}>Overview</button>
     <button onClick={() => Router.go('about')}>About</button>
     <button onClick={() => Router.go('article', { id: 1 })}>Article 1</button>

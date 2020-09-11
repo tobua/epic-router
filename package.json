@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "MobX react router.",
   "repository": "github:tobua/epic-react-router",
+  "license": "MIT",
   "main": "dist/index.js",
   "source": "index.tsx",
   "types": "dist/index.d.ts",
@@ -15,7 +16,10 @@
   },
   "prettier": "padua/configuration/.prettierrc.json",
   "eslintConfig": {
-    "extends": "./node_modules/padua/configuration/eslint.cjs"
+    "extends": "./node_modules/padua/configuration/eslint.cjs",
+    "rules": {
+      "@typescript-eslint/lines-between-class-members": 0
+    }
   },
   "jest": {
     "globals": {

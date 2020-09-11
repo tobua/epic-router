@@ -61,16 +61,17 @@ class RouterStore {
       ? `?${stringify(parameters)}`
       : ''
 
-    const action = replace ? history.replace : history.push
-    action(`${route}${search}`, state)
+    const historyAction = replace ? history.replace : history.push
+    historyAction(`${route}${search}`, state)
   }
 
-  @action
+  // Static would require instantiation and another import.
+  // eslint-disable-next-line class-methods-use-this
   back() {
     history.back()
   }
 
-  @action
+  // eslint-disable-next-line class-methods-use-this
   forward() {
     history.forward()
   }
@@ -110,7 +111,7 @@ class RouterStore {
 
   // Retrieve current state from history.
   @action
-  listener({ action, location }) {
+  listener({ location }) {
     this.parameters = Object.assign(
       parse(location.search),
       location.state ?? {}
@@ -121,7 +122,4 @@ class RouterStore {
 
 export const Router = new RouterStore()
 
-export const Page = observer(() => {
-  const { Page, parameters } = Router
-  return <Page {...parameters} />
-})
+export const Page = observer(() => <Router.Page {...Router.parameters} />)
