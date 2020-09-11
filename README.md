@@ -63,22 +63,14 @@ import { Router } from 'epic-react-router'
 
 The `Router`-Store can be accessed from anywhere to modify the state of the Router.
 
-```js
-Router.setPages(
-  (pages: { [key: string]: React.ReactNode }),
-  (initialRoute: string)
-)
+```ts
+Router.setPages(pages: { [key: string]: React.ReactNode }, initialRoute: string)
 ```
 
 Configure the route keys and their associated components, plus the route to be displayed initially.
 
-```js
-Router.go(
-  (route: string),
-  (parameters: object = {}),
-  (state: object = {}),
-  (replace = false)
-)
+```ts
+Router.go(route: string, parameters: object = {}, state: object = {}, replace = false)
 ```
 
 Navigates to a route. Parameters will be added to the URL search query and together with the state (both optional) will be passed to the page component as props. If replace is true, `back()` will not lead to the previous page.
@@ -89,8 +81,8 @@ Navigates to a route. Parameters will be added to the URL search query and toget
 
 `Router.initial()` go to the initial route.
 
-```js
-addPage((route: string), (component: React.ReactNode))
+```ts
+addPage(route: string, component: React.ReactNode)
 ```
 
 Add a single page after initialization. This can be useful when pages are loaded on request.
