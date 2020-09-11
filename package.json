@@ -35,7 +35,11 @@
           "configFile": "./node_modules/padua/configuration/.babelrc"
         }
       ]
-    }
+    },
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "dist"
+    ]
   },
   "dependencies": {
     "history": "^5.0.0",
@@ -47,7 +51,9 @@
     "mobx": "^5.15.6",
     "mobx-react": "^6.3.0",
     "padua": "^0.0.9",
-    "react": "^16.13.1"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-test-renderer": "^16.13.1"
   },
   "peerDependencies": {
     "mobx": "^5.15.6",
