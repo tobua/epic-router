@@ -4,12 +4,14 @@
 
 # epic-react-router
 
-MobX based router for React and React Native
+MobX based router for React and React Native.
 
 ## Installation
 
-```console
-npm i epic-react-router mobx mobx-react react react-dom
+```js
+npm install epic-react-router
+// Install peer dependencies if not yet installed.
+npm install mobx mobx-react react
 ```
 
 ## Usage
@@ -45,20 +47,50 @@ render(
 )
 ```
 
-## <Page />
+## `<Page />`
+
+```js
+import { Page } from 'epic-react-router'
+```
 
 Use the `<Page />` component anywhere in your layout to display the current page.
 
 ## Router
 
+```js
+import { Router } from 'epic-react-router'
+```
+
 The `Router`-Store can be accessed from anywhere to modify the state of the Router.
 
-`Router.setPages(pages: { [key: string]: React.ReactNode }, initialRoute: string)` configure the route keys and their associated components, plus the route to be displayed initially.
+```js
+Router.setPages(
+  (pages: { [key: string]: React.ReactNode }),
+  (initialRoute: string)
+)
+```
 
-`Router.go(route: string, parameters: object = {}, state: object = {}, replace = false)` Navigates to a route. Parameters will be added to the URL search query and together with the state (both optional) will be passed to the page component as props. If replace is true, `back()` will not lead to the previous page.
+Configure the route keys and their associated components, plus the route to be displayed initially.
+
+```js
+Router.go(
+  (route: string),
+  (parameters: object = {}),
+  (state: object = {}),
+  (replace = false)
+)
+```
+
+Navigates to a route. Parameters will be added to the URL search query and together with the state (both optional) will be passed to the page component as props. If replace is true, `back()` will not lead to the previous page.
 
 `Router.back()` go back one step in the history.
 
 `Router.forward()` go forward one step.
 
-`Router.reset()` go back to the initial route.
+`Router.initial()` go to the initial route.
+
+```js
+addPage((route: string), (component: React.ReactNode))
+```
+
+Add a single page after initialization. This can be useful when pages are loaded on request.

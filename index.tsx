@@ -62,7 +62,15 @@ class RouterStore {
       : ''
 
     const historyAction = replace ? history.replace : history.push
-    historyAction(`${route}${search}`, state)
+    // WORKAROUND https://github.com/ReactTraining/history/issues/814
+    historyAction(
+      {
+        hash: '',
+        search,
+        pathname: route,
+      },
+      state
+    )
   }
 
   // Static would require instantiation and another import.
@@ -77,7 +85,7 @@ class RouterStore {
   }
 
   @action
-  reset() {
+  initial() {
     this.route = this.initialRoute
     history.push(this.route)
   }
@@ -90,6 +98,11 @@ class RouterStore {
     if (!this.route) {
       this.route = initialRoute
     }
+  }
+
+  @action
+  addPage(route: string, component: React.ReactNode) {
+    this.pages[route] = component
   }
 
   @computed get Page() {
@@ -111,7 +124,7 @@ class RouterStore {
 
   // Retrieve current state from history.
   @action
-  listener({ location }) {
+  private listener({ location }) {
     this.parameters = Object.assign(
       parse(location.search),
       location.state ?? {}
