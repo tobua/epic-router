@@ -1,18 +1,38 @@
 {
   "name": "epic-react-router",
-  "version": "1.0.0",
   "description": "MobX react router.",
+  "version": "1.0.0",
   "repository": "github:tobua/epic-react-router",
   "license": "MIT",
+  "scripts": {
+    "start": "padua watch",
+    "test": "padua test"
+  },
+  "dependencies": {
+    "history": "^5.0.0",
+    "query-string": "^6.13.5"
+  },
+  "peerDependencies": {
+    "mobx": "^6.0.1",
+    "mobx-react-lite": "^3.0.0",
+    "react": "^16.13.1"
+  },
   "main": "dist/index.js",
   "source": "index.tsx",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "index.tsx"
   ],
-  "scripts": {
-    "start": "padua watch",
-    "test": "padua test"
+  "devDependencies": {
+    "@types/history": "^4.7.8",
+    "@types/react": "^16.9.51",
+    "mobx": "^6.0.1",
+    "mobx-react-lite": "^3.0.0",
+    "padua": "^0.1.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-test-renderer": "^16.13.1"
   },
   "prettier": "padua/configuration/.prettierrc.json",
   "eslintConfig": {
@@ -27,6 +47,10 @@
         "tsConfig": "./node_modules/padua/configuration/tsconfig.json"
       }
     },
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "dist"
+    ],
     "transform": {
       "^.+\\.tsx?$": "ts-jest",
       "^.+\\.jsx?$": [
@@ -35,29 +59,9 @@
           "configFile": "./node_modules/padua/configuration/.babelrc"
         }
       ]
-    },
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "dist"
-    ]
+    }
   },
-  "dependencies": {
-    "history": "^5.0.0",
-    "query-string": "^6.13.1"
-  },
-  "devDependencies": {
-    "@types/history": "^4.7.7",
-    "@types/react": "^16.9.49",
-    "mobx": "^5.15.6",
-    "mobx-react": "^6.3.0",
-    "padua": "^0.0.9",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-test-renderer": "^16.13.1"
-  },
-  "peerDependencies": {
-    "mobx": "^5.15.6",
-    "mobx-react": "^6.3.0",
-    "react": "^16.13.1"
+  "engines": {
+    "node": ">= 13.2.0"
   }
 }

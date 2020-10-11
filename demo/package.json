@@ -1,8 +1,8 @@
 {
   "dependencies": {
-    "mobx": "^5.15.6",
-    "mobx-react": "^6.3.0",
-    "papua": "^0.0.5",
+    "mobx": "^6.0.1",
+    "mobx-react-lite": "^3.0.0",
+    "papua": "latest",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },

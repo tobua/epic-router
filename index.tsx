@@ -1,6 +1,6 @@
 import React from 'react'
-import { observable, action, computed } from 'mobx'
-import { observer } from 'mobx-react'
+import { observable, action, computed, makeObservable } from 'mobx'
+import { observer } from 'mobx-react-lite'
 import {
   createBrowserHistory,
   createMemoryHistory,
@@ -26,10 +26,22 @@ const Error = (message: string) => () => (
 class RouterStore {
   initialRoute: string
   pages = {}
-  @observable route: string
-  @observable parameters = {}
+  route: string = null
+  parameters = {}
 
   constructor() {
+    makeObservable(this, {
+      route: observable,
+      parameters: observable,
+      go: action,
+      initial: action,
+      setPages: action,
+      addPage: action,
+      // @ts-ignore
+      listener: action,
+      Page: computed
+    })
+
     const { pathname, search } = history.location
 
     const path = removeLeadingSlash(pathname)
@@ -47,10 +59,9 @@ class RouterStore {
     this.parameters = parse(search)
   }
 
-  @action
   go(
     route: string,
-    parameters: object = {},
+    parameters = {},
     state: object = {},
     replace = false
   ) {
@@ -84,13 +95,11 @@ class RouterStore {
     history.forward()
   }
 
-  @action
   initial() {
     this.route = this.initialRoute
     history.push(this.route)
   }
 
-  @action
   setPages(pages: { [key: string]: React.ReactNode }, initialRoute: string) {
     this.pages = pages
     this.initialRoute = initialRoute
@@ -100,12 +109,12 @@ class RouterStore {
     }
   }
 
-  @action
   addPage(route: string, component: React.ReactNode) {
     this.pages[route] = component
   }
 
-  @computed get Page() {
+  // @ts-ignore
+  get Page() {
     if (!this.pages || this.initialRoute === undefined) {
       return Error(`No page or initialRoute configured, configure with Router.setPages(pages,
         initialRoute).`)
@@ -123,7 +132,6 @@ class RouterStore {
   }
 
   // Retrieve current state from history.
-  @action
   private listener({ location }) {
     this.parameters = Object.assign(
       parse(location.search),

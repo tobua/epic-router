@@ -1,9 +1,0 @@
-{
-  "extends": "padua/configuration/tsconfig",
-  "compilerOptions": {
-    "target": "ES6",
-    "experimentalDecorators": true,
-    "moduleResolution": "node"
-  },
-  "files": ["index.tsx"]
-}

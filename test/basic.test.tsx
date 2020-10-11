@@ -1,5 +1,5 @@
 import React from 'react'
-import { create, act } from 'react-test-renderer'
+import { create } from 'react-test-renderer'
 import { Page, Router } from '..'
 
 const Overview = () => <p>Overview</p>
