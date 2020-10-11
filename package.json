@@ -1,7 +1,7 @@
 {
   "name": "epic-react-router",
   "description": "MobX react router.",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "repository": "github:tobua/epic-react-router",
   "license": "MIT",
   "scripts": {
@@ -21,8 +21,7 @@
   "source": "index.tsx",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "index.tsx"
+    "dist"
   ],
   "devDependencies": {
     "@types/history": "^4.7.8",
