@@ -39,7 +39,7 @@ class RouterStore {
       addPage: action,
       // @ts-ignore
       listener: action,
-      Page: computed
+      Page: computed,
     })
 
     const { pathname, search } = history.location
@@ -59,12 +59,7 @@ class RouterStore {
     this.parameters = parse(search)
   }
 
-  go(
-    route: string,
-    parameters = {},
-    state: object = {},
-    replace = false
-  ) {
+  go(route: string, parameters = {}, state: object = {}, replace = false) {
     this.route = route
     this.parameters = parameters
 
@@ -143,4 +138,6 @@ class RouterStore {
 
 export const Router = new RouterStore()
 
-export const Page = observer(() => <Router.Page {...Router.parameters} />)
+export const Page = observer(({ ...props }: any) => (
+  <Router.Page {...props} {...Router.parameters} />
+))

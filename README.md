@@ -53,7 +53,11 @@ render(
 import { Page } from 'epic-react-router'
 ```
 
-Use the `<Page />` component anywhere in your layout to display the current page.
+Use the `<Page />` component anywhere in your layout to display the current page. Any props you pass to it will be handed over to the page components themselves:
+
+```jsx
+<Page onError={(error) => console.error(error)} />
+```
 
 ## Router
 
