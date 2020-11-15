@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/tobua/epic-react-router/compare/v2.0.0...v2.1.0) (2020-11-15)
+
+
+### Features
+
+* **Page:** allow passing arbitrary props from Page to the pages ([a343e58](https://github.com/tobua/epic-react-router/commit/a343e5842de55aa2f09053a81d653318594d6676))
+
 ## 2.0.0 (2020-10-11)
 
 
