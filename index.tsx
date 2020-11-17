@@ -120,7 +120,7 @@ class RouterStore {
     }
 
     if (!this.pages[this.route]) {
-      return Error(`Route {this.route} has no associated page!`)
+      return Error(`Route ${this.route} has no associated page!`)
     }
 
     return this.pages[this.route]
