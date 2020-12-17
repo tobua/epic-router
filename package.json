@@ -27,10 +27,10 @@
   ],
   "devDependencies": {
     "@types/history": "^4.7.8",
-    "@types/react": "^16.9.56",
+    "@types/react": "^17.0.0",
     "mobx": "^6.0.4",
     "mobx-react-lite": "^3.1.6",
-    "padua": "^0.1.4",
+    "padua": "^0.1.6",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-test-renderer": "^17.0.1"
@@ -45,7 +45,7 @@
   "jest": {
     "globals": {
       "ts-jest": {
-        "tsConfig": "./node_modules/padua/configuration/tsconfig.json"
+        "tsconfig": "./node_modules/padua/configuration/tsconfig.json"
       }
     },
     "testPathIgnorePatterns": [
