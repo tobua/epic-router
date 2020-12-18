@@ -29,7 +29,7 @@ const parsePath = (path: string) => {
   const trimmedPath = removeLeadingSlash(path)
 
   if (publicUrl) {
-    return trimmedPath.replace(publicUrl, '')
+    return removeLeadingSlash(trimmedPath.replace(publicUrl, ''))
   }
 
   return trimmedPath
@@ -66,7 +66,7 @@ class RouterStore {
 
     const { search, pathname } = history.location
 
-    const path = removeLeadingSlash(parsePath(pathname))
+    const path = parsePath(pathname)
 
     history.listen(this.listener.bind(this))
 
