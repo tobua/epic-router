@@ -1,4 +1,7 @@
 {
+  "papua": {
+    "publicPath": "epic-react-router"
+  },
   "dependencies": {
     "mobx": "^6.0.4",
     "mobx-react-lite": "^3.1.6",

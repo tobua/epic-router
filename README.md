@@ -4,6 +4,8 @@
 
 # epic-react-router
 
+[![epic-react-router Demo](https://img.shields.io/static/v1?label=epic-react-router&message=Demo&color=brightgreen)](https://tobua.github.io/epic-react-router)
+
 MobX based router for React and React Native.
 
 ## Installation
@@ -90,3 +92,5 @@ addPage(route: string, component: React.ReactNode)
 ```
 
 Add a single page after initialization. This can be useful when pages are loaded on request.
+
+If `process.env.PUBLIC_URL` is set during build the path will be adapted accordingly.

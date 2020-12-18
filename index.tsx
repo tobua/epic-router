@@ -7,6 +7,7 @@ import {
   BrowserHistory,
 } from 'history'
 import { parse, stringify } from 'query-string'
+import join from 'url-join'
 
 let history: BrowserHistory
 
@@ -17,11 +18,32 @@ if (typeof window !== 'undefined') {
   history = createMemoryHistory()
 }
 
-const removeLeadingSlash = (path: string) => path.replace(/^\//, '')
+const removeLeadingSlash = (path: string) => path.replace(/^\/*/, '')
 
 const Error = (message: string) => () => (
   <div style={{ color: 'red', fontWeight: 'bold' }}>{message}</div>
 )
+
+const parsePath = (path: string) => {
+  const publicUrl = removeLeadingSlash(process.env.PUBLIC_URL)
+  const trimmedPath = removeLeadingSlash(path)
+
+  if (publicUrl) {
+    return trimmedPath.replace(publicUrl, '')
+  }
+
+  return trimmedPath
+}
+
+const writePath = (path: string) => {
+  const publicUrl = removeLeadingSlash(process.env.PUBLIC_URL)
+
+  if (publicUrl) {
+    return join('/', publicUrl, path)
+  }
+
+  return join('/', path)
+}
 
 class RouterStore {
   initialRoute: string
@@ -42,9 +64,9 @@ class RouterStore {
       Page: computed,
     })
 
-    const { pathname, search } = history.location
+    const { search, pathname } = history.location
 
-    const path = removeLeadingSlash(pathname)
+    const path = removeLeadingSlash(parsePath(pathname))
 
     history.listen(this.listener.bind(this))
 
@@ -73,7 +95,7 @@ class RouterStore {
       {
         hash: '',
         search,
-        pathname: route,
+        pathname: writePath(route),
       },
       state
     )
@@ -92,7 +114,7 @@ class RouterStore {
 
   initial() {
     this.route = this.initialRoute
-    history.push(this.route)
+    history.push(writePath(this.route))
   }
 
   setPages(pages: { [key: string]: React.ReactNode }, initialRoute: string) {
@@ -132,7 +154,7 @@ class RouterStore {
       parse(location.search),
       location.state ?? {}
     )
-    this.route = removeLeadingSlash(location.pathname)
+    this.route = removeLeadingSlash(parsePath(location.pathname))
   }
 }
 
