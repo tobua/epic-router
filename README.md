@@ -32,7 +32,7 @@ const Article = ({ id }: { id: string }) => <p>Article: {id}</p>
 Router.setPages(
   {
     overview: Overview,
-    about: About,
+    'nested/about': About,
     article: Article,
   },
   'overview' // Initial page.
@@ -40,7 +40,7 @@ Router.setPages(
 
 render(
   <div>
-    <button onClick={() => Router.go('about')}>About</button>
+    <button onClick={() => Router.go('nested/about')}>About</button>
     <button onClick={() => Router.go('article', { id: 2 })}>Article 2</button>
     // Currently active page will be displayed here.
     <Page />
