@@ -20,6 +20,7 @@
     "react": "^17.0.1"
   },
   "main": "dist/index.js",
+  "module": "dist/index.js",
   "source": "index.tsx",
   "types": "dist/index.d.ts",
   "files": [
