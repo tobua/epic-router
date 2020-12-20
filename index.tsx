@@ -24,8 +24,17 @@ const Error = (message: string) => () => (
   <div style={{ color: 'red', fontWeight: 'bold' }}>{message}</div>
 )
 
+// Make sure PUBLIC_URL can be inserted by bundler, but will not cause error if missing.
+const getPublicUrl = () => {
+  if (process && process.env) {
+    return process.env.PUBLIC_URL ?? ''
+  }
+
+  return ''
+}
+
 const parsePath = (path: string) => {
-  const publicUrl = removeLeadingSlash(process.env.PUBLIC_URL)
+  const publicUrl = removeLeadingSlash(getPublicUrl())
   const trimmedPath = removeLeadingSlash(path)
 
   if (publicUrl) {
@@ -36,7 +45,7 @@ const parsePath = (path: string) => {
 }
 
 const writePath = (path: string) => {
-  const publicUrl = removeLeadingSlash(process.env.PUBLIC_URL)
+  const publicUrl = removeLeadingSlash(getPublicUrl())
 
   if (publicUrl) {
     return join('/', publicUrl, path)

@@ -1,6 +1,6 @@
 import React from 'react'
 import { create } from 'react-test-renderer'
-import { Page, Router } from '..'
+import { Page, Router } from '../index'
 
 const Overview = () => <p>Overview</p>
 const Error = ({ onError }: { onError: (message: string) => void }) => (
