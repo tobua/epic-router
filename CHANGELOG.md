@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.3](https://github.com/tobua/epic-react-router/compare/v2.1.2...v2.1.3) (2020-12-20)
+
+
+### Bug Fixes
+
+* **general:** update, use source for tests and add empty checks ([bca91d2](https://github.com/tobua/epic-react-router/commit/bca91d23fbdc145316daee70fb699482c3264960))
+* **router:** ensure parsing public path works initially ([a41bd8c](https://github.com/tobua/epic-react-router/commit/a41bd8c175d82616c68cdc74fa30235e74fcfce1))
+* **router:** plugin works with public path set ([54a5878](https://github.com/tobua/epic-react-router/commit/54a5878a668f1cfe74f06b5a998dc9c4d38cb574))
+* **router:** requires env variables during build ([716bc06](https://github.com/tobua/epic-react-router/commit/716bc06ffb92d7a16db51dad737c1d233bfd20d3))
+
 ### [2.1.2](https://github.com/tobua/epic-react-router/compare/v2.1.1...v2.1.2) (2020-12-17)
 
 ### [2.1.1](https://github.com/tobua/epic-react-router/compare/v2.1.0...v2.1.1) (2020-11-17)
