@@ -18,10 +18,29 @@ Router.setPages(
 )
 
 render(
-  <div>
-    <button onClick={() => Router.back()}>←</button>
-    <button onClick={() => Router.forward()}>→</button>
-    <h1>epic-react-router</h1>
+  <div style={{ fontFamily: 'sans-serif', maxWidth: '75vw', margin: '0 auto' }}>
+    <header style={{ display: 'flex' }}>
+      <h1>epic-react-router Demo</h1>
+      <nav
+        style={{
+          display: 'flex',
+          flex: 1,
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+        }}
+      >
+        <a href="https://www.npmjs.com/package/epic-react-router">
+          <img style={{ width: 30, marginLeft: 10 }} src="npm.svg" />
+        </a>
+        <a href="https://github.com/tobua/epic-react-router">
+          <img style={{ width: 30, marginLeft: 10 }} src="github.png" />
+        </a>
+      </nav>
+    </header>
+    <button onClick={() => Router.back()}>← Back</button>
+    <button onClick={() => Router.forward()}>Forward →</button>
+    <br />
+    <br />
     <button onClick={() => Router.go('overview')}>Overview</button>
     <button onClick={() => Router.go('about')}>About</button>
     <button onClick={() => Router.go('article', { id: 1 })}>Article 1</button>
