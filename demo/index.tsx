@@ -1,6 +1,8 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Router, Page } from 'epic-react-router'
+import github from 'github.png'
+import npm from 'npm.svg'
 
 const Overview = () => <p>Overview</p>
 const About = () => <p>About</p>
@@ -17,6 +19,23 @@ Router.setPages(
   'overview'
 )
 
+const Button = ({ text, onClick }) => (
+  <button
+    style={{
+      border: 'none',
+      outline: 'none',
+      background: 'black',
+      color: 'white',
+      padding: 10,
+      borderRadius: 10,
+      marginRight: 10,
+    }}
+    onClick={onClick}
+  >
+    {text}
+  </button>
+)
+
 render(
   <div style={{ fontFamily: 'sans-serif', maxWidth: '75vw', margin: '0 auto' }}>
     <header style={{ display: 'flex' }}>
@@ -30,25 +49,26 @@ render(
         }}
       >
         <a href="https://www.npmjs.com/package/epic-react-router">
-          <img style={{ width: 30, marginLeft: 10 }} src="npm.svg" />
+          <img style={{ width: 30, marginLeft: 10 }} src={npm} />
         </a>
         <a href="https://github.com/tobua/epic-react-router">
-          <img style={{ width: 30, marginLeft: 10 }} src="github.png" />
+          <img style={{ width: 30, marginLeft: 10 }} src={github} />
         </a>
       </nav>
     </header>
-    <button onClick={() => Router.back()}>← Back</button>
-    <button onClick={() => Router.forward()}>Forward →</button>
+    <Button text="← Back" onClick={() => Router.back()} />
+    <Button text="Forward →" onClick={() => Router.forward()} />
     <br />
     <br />
-    <button onClick={() => Router.go('overview')}>Overview</button>
-    <button onClick={() => Router.go('about')}>About</button>
-    <button onClick={() => Router.go('article', { id: 1 })}>Article 1</button>
-    <button onClick={() => Router.go('article', { id: 2 })}>Article 2</button>
-    <button onClick={() => Router.go('article', { id: 3 })}>Article 3</button>
-    <button onClick={() => Router.go('nested/overview')}>
-      Nested/Overview
-    </button>
+    <Button text="Overview" onClick={() => Router.go('overview')} />
+    <Button text="About" onClick={() => Router.go('about')} />
+    <Button text="Article 1" onClick={() => Router.go('article', { id: 1 })} />
+    <Button text="Article 2" onClick={() => Router.go('article', { id: 2 })} />
+    <Button text="Article 3" onClick={() => Router.go('article', { id: 3 })} />
+    <Button
+      text="Nested/Overview"
+      onClick={() => Router.go('nested/overview')}
+    />
     <Page />
   </div>,
   document.body
