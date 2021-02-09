@@ -4,7 +4,8 @@
 
 # epic-react-router
 
-[![epic-react-router Demo](https://img.shields.io/static/v1?label=epic-react-router&message=Demo&color=brightgreen)](https://tobua.github.io/epic-react-router)
+[![Demo](https://img.shields.io/static/v1?label=epic-react-router&message=Demo&color=brightgreen)](https://epic-react-router.vercel.app)
+[![npm](https://img.shields.io/npm/v/epic-react-router)](https://npmjs.com/epic-react-router)
 
 MobX based router for React and React Native.
 
