@@ -29,6 +29,7 @@ const Button = ({ text, onClick }) => (
       padding: 10,
       borderRadius: 10,
       marginRight: 10,
+      cursor: 'pointer',
     }}
     onClick={onClick}
   >

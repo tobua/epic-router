@@ -1,7 +1,6 @@
 {
   "papua": {
-    "title": "epic-react-router Demo",
-    "publicPath": "epic-react-router"
+    "title": "epic-react-router Demo"
   },
   "dependencies": {
     "mobx": "^6.1.5",
