@@ -2,20 +2,20 @@ import React from 'react'
 import { observable, action, computed, makeObservable } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import {
+  BrowserHistory,
   createBrowserHistory,
   createMemoryHistory,
-  BrowserHistory,
 } from 'history'
 import { parse, stringify } from 'query-string'
 import join from 'url-join'
 
-let history: BrowserHistory
-
-if (typeof window !== 'undefined') {
-  history = createBrowserHistory()
-} else {
-  // No URL for ReactNative etc.
-  history = createMemoryHistory()
+const createHistory = () => {
+  if (typeof window !== 'undefined') {
+    return createBrowserHistory()
+  } else {
+    // No URL for ReactNative etc.
+    return createMemoryHistory()
+  }
 }
 
 const removeLeadingSlash = (path: string) => path.replace(/^\/*/, '')
@@ -50,6 +50,7 @@ class RouterStore {
   pages = {}
   route: string = null
   parameters = {}
+  history: BrowserHistory = null
 
   constructor() {
     makeObservable(this, {
@@ -64,11 +65,13 @@ class RouterStore {
       Page: computed,
     })
 
-    const { search, pathname } = history.location
+    this.history = createHistory()
+
+    const { search, pathname } = this.history.location
 
     const path = parsePath(pathname)
 
-    history.listen(this.listener.bind(this))
+    this.history.listen(this.listener.bind(this))
 
     if (path && path.length > 0) {
       this.route = path
@@ -89,7 +92,7 @@ class RouterStore {
       ? `?${stringify(parameters)}`
       : ''
 
-    const historyAction = replace ? history.replace : history.push
+    const historyAction = replace ? this.history.replace : this.history.push
     // WORKAROUND https://github.com/ReactTraining/history/issues/814
     historyAction(
       {
@@ -104,17 +107,17 @@ class RouterStore {
   // Static would require instantiation and another import.
   // eslint-disable-next-line class-methods-use-this
   back() {
-    history.back()
+    this.history.back()
   }
 
   // eslint-disable-next-line class-methods-use-this
   forward() {
-    history.forward()
+    this.history.forward()
   }
 
   initial() {
     this.route = this.initialRoute
-    history.push(writePath(this.route))
+    this.history.push(writePath(this.route))
   }
 
   setPages(pages: { [key: string]: React.ReactNode }, initialRoute: string) {

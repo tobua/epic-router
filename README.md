@@ -14,7 +14,7 @@ MobX based router for React and React Native.
 ```js
 npm install epic-react-router
 // Install peer dependencies if not yet installed.
-npm install mobx mobx-react react
+npm install mobx mobx-react-lite react
 ```
 
 ## Usage

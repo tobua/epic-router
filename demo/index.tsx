@@ -1,8 +1,7 @@
 import React from 'react'
 import { render } from 'react-dom'
+import { Exmpl } from 'exmpl'
 import { Router, Page } from 'epic-react-router'
-import github from 'github.png'
-import npm from 'npm.svg'
 
 const Overview = () => <p>Overview</p>
 const About = () => <p>About</p>
@@ -38,25 +37,11 @@ const Button = ({ text, onClick }) => (
 )
 
 render(
-  <div style={{ fontFamily: 'sans-serif', maxWidth: '75vw', margin: '0 auto' }}>
-    <header style={{ display: 'flex' }}>
-      <h1>epic-react-router Demo</h1>
-      <nav
-        style={{
-          display: 'flex',
-          flex: 1,
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-        }}
-      >
-        <a href="https://www.npmjs.com/package/epic-react-router">
-          <img style={{ width: 30, marginLeft: 10 }} src={npm} />
-        </a>
-        <a href="https://github.com/tobua/epic-react-router">
-          <img style={{ width: 30, marginLeft: 10 }} src={github} />
-        </a>
-      </nav>
-    </header>
+  <Exmpl
+    title="epic-react-router Demo"
+    npm="epic-react-router"
+    github="tobua/epic-react-router"
+  >
     <Button text="← Back" onClick={() => Router.back()} />
     <Button text="Forward →" onClick={() => Router.forward()} />
     <br />
@@ -71,6 +56,6 @@ render(
       onClick={() => Router.go('nested/overview')}
     />
     <Page />
-  </div>,
+  </Exmpl>,
   document.body
 )
