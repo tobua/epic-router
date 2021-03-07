@@ -1,7 +1,7 @@
 {
   "name": "epic-react-router",
   "description": "MobX react router.",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "repository": "github:tobua/epic-react-router",
   "homepage": "https://epic-react-router.vercel.app",
   "license": "MIT",
