@@ -68,7 +68,7 @@ Use the `<Page />` component anywhere in your layout to display the current page
 import { Router } from 'epic-react-router'
 ```
 
-The `Router`-Store can be accessed from anywhere to modify the state of the Router.
+The `Router`-Store can be accessed from anywhere to access, configure and modify the state of the Router.
 
 ```ts
 Router.setPages(pages: { [key: string]: React.ReactNode }, initialRoute: string)
@@ -93,5 +93,20 @@ addPage(route: string, component: React.ReactNode)
 ```
 
 Add a single page after initialization. This can be useful when pages are loaded on request.
+
+```ts
+// Currently active route.
+Router.route => string
+// Parameters for current route.
+Router.parameters => Object
+// Initial route.
+Router.initialRoute => string
+// Available routes.
+Router.pages => Object
+// Underlieing history object, either BrowserHistory or MemoryHistory.
+Router.history => History
+```
+
+## Notes
 
 If `process.env.PUBLIC_URL` is set during build the path will be adapted accordingly.

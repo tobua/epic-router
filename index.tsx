@@ -1,21 +1,17 @@
 import React from 'react'
 import { observable, action, computed, makeObservable } from 'mobx'
 import { observer } from 'mobx-react-lite'
-import {
-  BrowserHistory,
-  createBrowserHistory,
-  createMemoryHistory,
-} from 'history'
+import { History, createBrowserHistory, createMemoryHistory } from 'history'
 import { parse, stringify } from 'query-string'
 import join from 'url-join'
 
 const createHistory = () => {
   if (typeof window !== 'undefined') {
     return createBrowserHistory()
-  } else {
-    // No URL for ReactNative etc.
-    return createMemoryHistory()
   }
+
+  // No URL for ReactNative etc.
+  return createMemoryHistory()
 }
 
 const removeLeadingSlash = (path: string) => path.replace(/^\/*/, '')
@@ -42,6 +38,11 @@ const writePath = (path: string) => {
     return join('/', publicUrl, path)
   }
 
+  // join will not work properly in this case.
+  if (path === '') {
+    return '/'
+  }
+
   return join('/', path)
 }
 
@@ -50,7 +51,7 @@ class RouterStore {
   pages = {}
   route: string = null
   parameters = {}
-  history: BrowserHistory = null
+  history: History = null
 
   constructor() {
     makeObservable(this, {
@@ -91,6 +92,11 @@ class RouterStore {
     const search = Object.keys(parameters).length
       ? `?${stringify(parameters)}`
       : ''
+
+    if (route === this.initialRoute && !Object.keys(parameters).length) {
+      // eslint-disable-next-line no-param-reassign
+      route = ''
+    }
 
     const historyAction = replace ? this.history.replace : this.history.push
     // WORKAROUND https://github.com/ReactTraining/history/issues/814
@@ -157,7 +163,14 @@ class RouterStore {
       parse(location.search),
       location.state ?? {}
     )
-    this.route = removeLeadingSlash(parsePath(location.pathname))
+
+    let parsedPath = parsePath(location.pathname)
+
+    if (parsedPath === '') {
+      parsedPath = this.initialRoute
+    }
+
+    this.route = removeLeadingSlash(parsedPath)
   }
 }
 

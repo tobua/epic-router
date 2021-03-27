@@ -21,12 +21,14 @@ Router.setPages(
 test('Intial page is rendered without interaction.', () => {
   const page = create(<Page />).toJSON()
   expect(page).toEqual(OverviewMarkup)
+  expect(Router.history.location.pathname).toEqual('/')
 })
 
 test('go: Switches to page.', () => {
   Router.go('about')
   const page = create(<Page />).toJSON()
   expect(page).toEqual(AboutMarkup)
+  expect(Router.history.location.pathname).toEqual('/about')
 })
 
 test('back: Goes back to the initial page.', async () => {
@@ -35,10 +37,23 @@ test('back: Goes back to the initial page.', async () => {
   await new Promise((_) => setTimeout(_, 100))
   const page = create(<Page />).toJSON()
   expect(page).toEqual(OverviewMarkup)
+  expect(Router.history.location.pathname).toEqual('/')
 })
 
 test('go: Switches to page with parameters.', () => {
   Router.go('article', { id: 5 })
   const page = create(<Page />).toJSON()
   expect(page).toEqual(Article5Markup)
+  expect(Router.history.location.pathname).toEqual('/article')
+  expect(Router.history.location.search).toEqual('?id=5')
+})
+
+test('go: Initial route is found on /.', () => {
+  expect(Router.initialRoute).toEqual('overview')
+  Router.go(Router.initialRoute)
+  const page = create(<Page />).toJSON()
+  expect(page).toEqual(OverviewMarkup)
+  expect(Router.route).toEqual('overview')
+  expect(Router.history.location.pathname).toEqual('/')
+  expect(Router.history.location.search).toEqual('')
 })
