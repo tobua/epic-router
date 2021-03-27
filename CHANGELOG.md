@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.6](https://github.com/tobua/epic-react-router/compare/v2.1.5...v2.1.6) (2021-03-27)
+
+
+### Bug Fixes
+
+* **path:** set initial path to root and document parameters ([292b906](https://github.com/tobua/epic-react-router/commit/292b906b4390b11d5763318dc2b07d099a8875ff))
+
 ### [2.1.5](https://github.com/tobua/epic-react-router/compare/v2.1.4...v2.1.5) (2021-03-07)
 
 
