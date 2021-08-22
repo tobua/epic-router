@@ -1,7 +1,7 @@
 {
   "name": "epic-react-router",
   "description": "MobX react router.",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "repository": "github:tobua/epic-react-router",
   "homepage": "https://epic-react-router.vercel.app",
   "license": "MIT",
@@ -32,6 +32,12 @@
   "files": [
     "dist",
     "index.tsx"
+  ],
+  "keywords": [
+    "mobx",
+    "react",
+    "router",
+    "web"
   ],
   "devDependencies": {
     "@types/history": "^4.7.9",
