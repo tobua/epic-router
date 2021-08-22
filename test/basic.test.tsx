@@ -1,5 +1,5 @@
 import React from 'react'
-import { create } from 'react-test-renderer'
+import { create, act } from 'react-test-renderer'
 import { Page, Router } from '../index'
 
 const Overview = () => <p>Overview</p>
@@ -25,14 +25,18 @@ test('Intial page is rendered without interaction.', () => {
 })
 
 test('go: Switches to page.', () => {
-  Router.go('about')
+  act(() => {
+    Router.go('about')
+  })
   const page = create(<Page />).toJSON()
   expect(page).toEqual(AboutMarkup)
   expect(Router.history.location.pathname).toEqual('/about')
 })
 
 test('back: Goes back to the initial page.', async () => {
-  Router.back()
+  act(() => {
+    Router.back()
+  })
   // Takes some time until back has happened.
   await new Promise((_) => setTimeout(_, 100))
   const page = create(<Page />).toJSON()
@@ -41,7 +45,9 @@ test('back: Goes back to the initial page.', async () => {
 })
 
 test('go: Switches to page with parameters.', () => {
-  Router.go('article', { id: 5 })
+  act(() => {
+    Router.go('article', { id: 5 })
+  })
   const page = create(<Page />).toJSON()
   expect(page).toEqual(Article5Markup)
   expect(Router.history.location.pathname).toEqual('/article')
@@ -50,7 +56,9 @@ test('go: Switches to page with parameters.', () => {
 
 test('go: Initial route is found on /.', () => {
   expect(Router.initialRoute).toEqual('overview')
-  Router.go(Router.initialRoute)
+  act(() => {
+    Router.go(Router.initialRoute)
+  })
   const page = create(<Page />).toJSON()
   expect(page).toEqual(OverviewMarkup)
   expect(Router.route).toEqual('overview')

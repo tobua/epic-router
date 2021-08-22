@@ -4,8 +4,8 @@
     "publicPath": "/"
   },
   "dependencies": {
-    "exmpl": "^2.0.1",
-    "mobx": "^6.1.8",
+    "exmpl": "^2.2.1",
+    "mobx": "^6.3.2",
     "mobx-react-lite": "^3.2.0",
     "papua": "latest",
     "react": "^17.0.2",

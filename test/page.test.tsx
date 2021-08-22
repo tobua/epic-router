@@ -1,5 +1,5 @@
 import React from 'react'
-import { create } from 'react-test-renderer'
+import { create, act } from 'react-test-renderer'
 import { Page, Router } from '../index'
 
 const Overview = () => <p>Overview</p>
@@ -18,7 +18,9 @@ Router.setPages(
 test('Props handed to Page can be accessed from pages.', () => {
   const errorMock = jest.fn()
   expect(errorMock.mock.calls.length).toEqual(0)
-  Router.go('error')
+  act(() => {
+    Router.go('error')
+  })
   create(<Page onError={errorMock} />)
   expect(errorMock.mock.calls.length).toEqual(1)
 })
