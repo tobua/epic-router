@@ -1,6 +1,7 @@
 {
   "papua": {
     "title": "epic-react-router Demo",
+    "icon": "../logo.png",
     "publicPath": "/"
   },
   "dependencies": {

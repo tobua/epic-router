@@ -16,9 +16,8 @@ const createHistory = () => {
 
 const removeLeadingSlash = (path: string) => path.replace(/^\/*/, '')
 
-const Error = (message: string) => () => (
+const Error = (message: string) => () =>
   <div style={{ color: 'red', fontWeight: 'bold' }}>{message}</div>
-)
 
 const parsePath = (path: string) => {
   const publicUrl = removeLeadingSlash(process.env.PUBLIC_URL ?? '')
