@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/tobua/epic-react-router/raw/master/logo.png" alt="epic-react-router" width="320">
+  <img src="https://github.com/tobua/epic-react-router/raw/main/logo.png" alt="epic-react-router" width="180">
 </p>
 
 # epic-react-router
@@ -11,9 +11,9 @@ MobX based router for React and React Native.
 
 ## Installation
 
-```js
+```sh
 npm install epic-react-router
-// Install peer dependencies if not yet installed.
+# Install peer dependencies if not yet installed.
 npm install mobx mobx-react-lite react
 ```
 
