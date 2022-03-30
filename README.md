@@ -21,7 +21,7 @@ npm install mobx mobx-react-lite react
 
 ```js
 import React from 'react'
-import { render } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Router, Page } from 'epic-react-router'
 
 // Declare some components used as pages.
@@ -39,14 +39,13 @@ Router.setPages(
   'overview' // Initial page.
 )
 
-render(
+createRoot(document.body).render(
   <div>
     <button onClick={() => Router.go('nested/about')}>About</button>
     <button onClick={() => Router.go('article', { id: 2 })}>Article 2</button>
     // Currently active page will be displayed here.
     <Page />
-  </div>,
-  document.body
+  </div>
 )
 ```
 

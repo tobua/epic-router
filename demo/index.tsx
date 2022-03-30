@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Exmpl } from 'exmpl'
 import { Router, Page } from 'epic-react-router'
 
@@ -36,12 +36,8 @@ const Button = ({ text, onClick }) => (
   </button>
 )
 
-render(
-  <Exmpl
-    title="epic-react-router Demo"
-    npm="epic-react-router"
-    github="tobua/epic-react-router"
-  >
+createRoot(document.body).render(
+  <Exmpl title="epic-react-router Demo" npm="epic-react-router" github="tobua/epic-react-router">
     <Button text="← Back" onClick={() => Router.back()} />
     <Button text="Forward →" onClick={() => Router.forward()} />
     <br />
@@ -51,11 +47,7 @@ render(
     <Button text="Article 1" onClick={() => Router.go('article', { id: 1 })} />
     <Button text="Article 2" onClick={() => Router.go('article', { id: 2 })} />
     <Button text="Article 3" onClick={() => Router.go('article', { id: 3 })} />
-    <Button
-      text="Nested/Overview"
-      onClick={() => Router.go('nested/overview')}
-    />
+    <Button text="Nested/Overview" onClick={() => Router.go('nested/overview')} />
     <Page />
-  </Exmpl>,
-  document.body
+  </Exmpl>
 )

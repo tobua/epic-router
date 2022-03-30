@@ -14,13 +14,14 @@
   "dependencies": {
     "history": "^5.3.0",
     "query-string": "^7.1.1",
-    "url-join": "^4.0.1"
+    "url-join": "^5.0.0"
   },
   "peerDependencies": {
-    "mobx": "^6.4.2",
+    "mobx": "^6.5.0",
     "mobx-react-lite": "^3.3.0",
-    "react": "^17.0.2"
+    "react": "^18.0.0"
   },
+  "type": "module",
   "sideEffects": false,
   "main": "dist/index.js",
   "exports": {
@@ -40,13 +41,13 @@
   ],
   "devDependencies": {
     "@types/history": "^4.7.11",
-    "@types/react": "^17.0.39",
-    "mobx": "^6.4.2",
+    "@types/react": "^17.0.43",
+    "mobx": "^6.5.0",
     "mobx-react-lite": "^3.3.0",
-    "padua": "^0.5.3",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-test-renderer": "^17.0.2"
+    "padua": "^0.5.4",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-test-renderer": "^18.0.0"
   },
   "prettier": "padua/configuration/.prettierrc.json",
   "eslintConfig": {
@@ -66,8 +67,17 @@
       "dist"
     ],
     "transform": {
+      "^.+\\.jsx?$": [
+        "babel-jest",
+        {
+          "configFile": "./node_modules/padua/configuration/.babelrc"
+        }
+      ],
       "^.+\\.tsx?$": "ts-jest"
-    }
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!url-join).*/"
+    ]
   },
   "engines": {
     "node": ">= 14"

@@ -9,13 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: npm install
+      - run: npm install --legacy-peer-deps
       - name: 🧪 Test
         run: npm test
       - name: 🛠️ Build Demo
         run: |
           cd demo
-          npm install
+          npm install --legacy-peer-deps
           npx papua build
       - name: 🚀 Publish Demo
         uses: JamesIves/github-pages-deploy-action@v4

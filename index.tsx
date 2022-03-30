@@ -88,9 +88,7 @@ class RouterStore {
     this.route = route
     this.parameters = parameters
 
-    const search = Object.keys(parameters).length
-      ? `?${stringify(parameters)}`
-      : ''
+    const search = Object.keys(parameters).length ? `?${stringify(parameters)}` : ''
 
     if (route === this.initialRoute && !Object.keys(parameters).length) {
       // eslint-disable-next-line no-param-reassign
@@ -158,10 +156,7 @@ class RouterStore {
 
   // Retrieve current state from history.
   private listener({ location }) {
-    this.parameters = Object.assign(
-      parse(location.search),
-      location.state ?? {}
-    )
+    this.parameters = Object.assign(parse(location.search), location.state ?? {})
 
     let parsedPath = parsePath(location.pathname)
 
