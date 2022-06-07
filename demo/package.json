@@ -6,11 +6,11 @@
   },
   "dependencies": {
     "exmpl": "^3.0.0",
-    "mobx": "^6.5.0",
-    "mobx-react-lite": "^3.3.0",
-    "papua": "^1.0.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "mobx": "^6.6.0",
+    "mobx-react-lite": "^3.4.0",
+    "papua": "^2.0.1",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0"
   },
   "localDependencies": {
     "epic-react-router": ".."

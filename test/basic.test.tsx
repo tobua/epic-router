@@ -4,16 +4,26 @@ import { Page, Router } from '../index'
 
 const Overview = () => <p>Overview</p>
 const OverviewMarkup = create(<Overview />).toJSON()
-const About = () => <p>About</p>
+function About() {
+  return <p>About</p>
+}
 const AboutMarkup = create(<About />).toJSON()
 const Article = ({ id }: { id: string }) => <p>Article: {id}</p>
 const Article5Markup = create(<Article id="5" />).toJSON()
+const Fragment = (name: string, count: number) => (
+  <>
+    <p>{name}</p>
+    <span>{count}</span>
+  </>
+)
 
 Router.setPages(
   {
     overview: Overview,
     about: About,
     article: Article,
+    static: <p>Hello</p>,
+    fragment: Fragment,
   },
   'overview'
 )
@@ -38,7 +48,9 @@ test('back: Goes back to the initial page.', async () => {
     Router.back()
   })
   // Takes some time until back has happened.
-  await new Promise((_) => setTimeout(_, 100))
+  await new Promise((done) => {
+    setTimeout(done, 100)
+  })
   const page = create(<Page />).toJSON()
   expect(page).toEqual(OverviewMarkup)
   expect(Router.history.location.pathname).toEqual('/')

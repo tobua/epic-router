@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { observable, action, computed, makeObservable } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { History, createBrowserHistory, createMemoryHistory } from 'history'
@@ -16,8 +16,9 @@ const createHistory = () => {
 
 const removeLeadingSlash = (path: string) => path.replace(/^\/*/, '')
 
-const Error = (message: string) => () =>
-  <div style={{ color: 'red', fontWeight: 'bold' }}>{message}</div>
+function Error(message: string) {
+  return <div style={{ color: 'red', fontWeight: 'bold' }}>{message}</div>
+}
 
 const parsePath = (path: string) => {
   const publicUrl = removeLeadingSlash(process.env.PUBLIC_URL ?? '')
@@ -44,6 +45,8 @@ const writePath = (path: string) => {
 
   return join('/', path)
 }
+
+type Input = ReactNode | ReactNode[] | ((...args: any[]) => JSX.Element)
 
 class RouterStore {
   initialRoute: string
@@ -123,7 +126,7 @@ class RouterStore {
     this.history.push(writePath(this.route))
   }
 
-  setPages(pages: { [key: string]: React.ReactNode }, initialRoute: string) {
+  setPages(pages: { [key: string]: Input }, initialRoute: string) {
     this.pages = pages
     this.initialRoute = initialRoute
 
@@ -132,7 +135,7 @@ class RouterStore {
     }
   }
 
-  addPage(route: string, component: React.ReactNode) {
+  addPage(route: string, component: Input) {
     this.pages[route] = component
   }
 

@@ -3,7 +3,7 @@ import { create, act } from 'react-test-renderer'
 import { Page, Router } from '../index'
 
 const Overview = () => <p>Overview</p>
-const Error = ({ onError }: { onError: (message: string) => void }) => (
+const Error = ({ onError }: { onError: (message: string) => any }) => (
   <p>sending an error {onError('whatt?')}</p>
 )
 
