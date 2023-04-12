@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 import { observable, action, computed, makeObservable } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { History, createBrowserHistory, createMemoryHistory } from 'history'
-import { parse, stringify } from 'query-string'
+import queryString from 'query-string'
 import join from 'url-join'
 
 const createHistory = () => {
@@ -84,14 +84,14 @@ class RouterStore {
       return
     }
 
-    this.parameters = parse(search)
+    this.parameters = queryString.parse(search)
   }
 
   go(route: string, parameters = {}, state: object = {}, replace = false) {
     this.route = route
     this.parameters = parameters
 
-    const search = Object.keys(parameters).length ? `?${stringify(parameters)}` : ''
+    const search = Object.keys(parameters).length ? `?${queryString.stringify(parameters)}` : ''
 
     if (route === this.initialRoute && !Object.keys(parameters).length) {
       // eslint-disable-next-line no-param-reassign
@@ -139,7 +139,6 @@ class RouterStore {
     this.pages[route] = component
   }
 
-  // @ts-ignore
   get Page() {
     if (!this.pages || this.initialRoute === undefined) {
       return Error(`No page or initialRoute configured, configure with Router.setPages(pages,
@@ -159,7 +158,7 @@ class RouterStore {
 
   // Retrieve current state from history.
   private listener({ location }) {
-    this.parameters = Object.assign(parse(location.search), location.state ?? {})
+    this.parameters = Object.assign(queryString.parse(location.search), location.state ?? {})
 
     let parsedPath = parsePath(location.pathname)
 

@@ -11,9 +11,16 @@
     "start": "padua watch",
     "test": "padua test"
   },
+  "padua": {
+    "tsconfig": {
+      "compilerOptions": {
+        "target": "esnext"
+      }
+    }
+  },
   "dependencies": {
     "history": "^5.3.0",
-    "query-string": "^7.1.1",
+    "query-string": "^8.1.0",
     "url-join": "^5.0.0"
   },
   "peerDependencies": {
@@ -41,13 +48,13 @@
   ],
   "devDependencies": {
     "@types/history": "^4.7.11",
-    "@types/react": "^18.0.12",
-    "mobx": "^6.6.0",
-    "mobx-react-lite": "^3.4.0",
-    "padua": "^0.5.6",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "react-test-renderer": "^18.1.0"
+    "@types/react": "^18.0.35",
+    "mobx": "^6.9.0",
+    "mobx-react-lite": "^3.4.3",
+    "padua": "^1.2.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-test-renderer": "^18.2.0"
   },
   "prettier": "padua/configuration/.prettierrc.json",
   "eslintConfig": {
@@ -58,11 +65,6 @@
     }
   },
   "jest": {
-    "globals": {
-      "ts-jest": {
-        "tsconfig": "./tsconfig.json"
-      }
-    },
     "testPathIgnorePatterns": [
       "/node_modules/",
       "dist"
@@ -77,10 +79,10 @@
       "^.+\\.tsx?$": "ts-jest"
     },
     "transformIgnorePatterns": [
-      "/node_modules/(?!url-join).*/"
+      "/node_modules/(?!url-join|query-string|decode-uri-component|split-on-first|filter-obj).*/"
     ]
   },
   "engines": {
-    "node": ">= 14"
+    "node": ">= 16"
   }
 }

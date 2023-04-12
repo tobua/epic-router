@@ -43,7 +43,7 @@ createRoot(document.body).render(
   <div>
     <button onClick={() => Router.go('nested/about')}>About</button>
     <button onClick={() => Router.go('article', { id: 2 })}>Article 2</button>
-    // Currently active page will be displayed here.
+    {/* Currently active page will be displayed in Page component. */}
     <Page />
   </div>
 )
