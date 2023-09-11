@@ -16,8 +16,26 @@ const createHistory = () => {
 
 const removeLeadingSlash = (path: string) => path.replace(/^\/*/, '')
 
-function Error(message: string) {
-  return <div style={{ color: 'red', fontWeight: 'bold' }}>{message}</div>
+function Code({ children }: { children: string | string[] }) {
+  return (
+    <span
+      style={{
+        fontFamily: 'monospace',
+        color: 'initial',
+        background: 'lightgray',
+        borderRadius: 5,
+        paddingLeft: 2,
+        paddingRight: 2,
+        paddingBottom: 1,
+      }}
+    >
+      {children}
+    </span>
+  )
+}
+
+function Error(message: JSX.Element) {
+  return () => <div style={{ color: 'red', fontWeight: 'bold' }}>{message}</div>
 }
 
 const parsePath = (path: string) => {
@@ -140,9 +158,13 @@ class RouterStore {
   }
 
   get Page() {
-    if (!this.pages || this.initialRoute === undefined) {
-      return Error(`No page or initialRoute configured, configure with Router.setPages(pages,
-        initialRoute).`)
+    if (process.env.NODE_ENV !== 'production' && (!this.pages || this.initialRoute === undefined)) {
+      return Error(
+        <span>
+          No <Code>pages</Code> or <Code>initialRoute</Code> configured, configure with{' '}
+          <Code>Router.setPages(pages, initialRoute)</Code>.
+        </span>
+      )
     }
 
     if (this.route === '') {
@@ -150,7 +172,18 @@ class RouterStore {
     }
 
     if (!this.pages[this.route]) {
-      return Error(`Route ${this.route} has no associated page!`)
+      return (
+        this.pages['404'] ??
+        Error(
+          process.env.NODE_ENV === 'production' ? (
+            <span>Page not found!</span>
+          ) : (
+            <span>
+              Route <Code>/{this.route}</Code> has no associated page!
+            </span>
+          )
+        )
+      )
     }
 
     return this.pages[this.route]

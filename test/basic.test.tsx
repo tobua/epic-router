@@ -9,6 +9,8 @@ function About() {
 }
 const AboutMarkup = create(<About />).toJSON()
 const Article = ({ id }: { id: string }) => <p>Article: {id}</p>
+const Custom404 = () => <p>Page not found</p>
+const Custom404Markup = create(<Custom404 />).toJSON()
 const Article5Markup = create(<Article id="5" />).toJSON()
 const Fragment = (name: string, count: number) => (
   <>
@@ -24,6 +26,7 @@ Router.setPages(
     article: Article,
     static: <p>Hello</p>,
     fragment: Fragment,
+    404: Custom404,
   },
   'overview'
 )
@@ -76,4 +79,13 @@ test('go: Initial route is found on /.', () => {
   expect(Router.route).toEqual('overview')
   expect(Router.history.location.pathname).toEqual('/')
   expect(Router.history.location.search).toEqual('')
+})
+
+test('go: Missing route shows 404 fallback in page.', () => {
+  act(() => {
+    Router.go('missing')
+  })
+  const page = create(<Page />).toJSON()
+  expect(page).toEqual(Custom404Markup)
+  expect(Router.history.location.pathname).toEqual('/missing')
 })

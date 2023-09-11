@@ -19,7 +19,7 @@ npm install mobx mobx-react-lite react
 
 ## Usage
 
-```js
+```jsx
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { Router, Page } from 'epic-react-router'
@@ -35,6 +35,8 @@ Router.setPages(
     overview: Overview,
     'nested/about': About,
     article: Article,
+    // Custom 404 page for missing routes.
+    404: Custom404
   },
   'overview' // Initial page.
 )
@@ -104,6 +106,20 @@ Router.initialRoute => string
 Router.pages => Object
 // Underlieing history object, either BrowserHistory or MemoryHistory.
 Router.history => History
+```
+
+### Error Route (404 Not Found)
+
+The `404` page can be set to show a custom error page when a route is not found.
+
+```tsx
+import { Router } from 'epic-react-router'
+
+const Custom404 = () => <p>Page Not Found!</p>
+
+Router.setPages({
+  404: Custom404,
+})
 ```
 
 ## Notes
