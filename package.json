@@ -25,18 +25,18 @@
   },
   "devDependencies": {
     "@types/history": "^4.7.11",
-    "@types/react": "^18.2.21",
+    "@types/react": "^18.2.28",
     "mobx": "^6.10.2",
-    "mobx-react-lite": "^4.0.4",
-    "padua": "^2.0.3",
+    "mobx-react-lite": "^4.0.5",
+    "padua": "^2.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-test-renderer": "^18.2.0"
   },
   "peerDependencies": {
-    "mobx": "^6.6.0",
-    "mobx-react-lite": "^3.4.0",
-    "react": "^18.1.0"
+    "mobx": ">= 5",
+    "mobx-react-lite": ">= 3",
+    "react": ">= 18"
   },
   "type": "module",
   "sideEffects": false,
@@ -83,6 +83,6 @@
     ]
   },
   "engines": {
-    "node": ">= 16"
+    "node": ">= 18"
   }
 }
