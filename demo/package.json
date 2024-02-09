@@ -1,18 +1,16 @@
 {
   "papua": {
-    "title": "epic-react-router Demo",
+    "title": "epic-router Demo",
     "icon": "../logo.png",
     "publicPath": "/"
   },
   "dependencies": {
     "exmpl": "^3.0.0",
-    "mobx": "^6.10.2",
-    "mobx-react-lite": "^4.0.4",
-    "papua": "^5.7.0",
+    "papua": "^5.9.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "localDependencies": {
-    "epic-react-router": ".."
+    "epic-router": ".."
   }
 }

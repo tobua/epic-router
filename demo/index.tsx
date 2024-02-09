@@ -1,7 +1,7 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { Exmpl } from 'exmpl'
-import { Router, Page } from 'epic-react-router'
+import { Router, Page } from 'epic-router'
 
 const Overview = () => <span>Overview</span>
 const About = () => <span>About</span>
@@ -17,7 +17,7 @@ Router.setPages(
     'nested/overview': Nested,
     404: Custom404,
   },
-  'overview'
+  'overview',
 )
 
 const Button = ({ text, onClick }) => (
@@ -38,7 +38,7 @@ const Button = ({ text, onClick }) => (
 )
 
 createRoot(document.body).render(
-  <Exmpl title="epic-react-router Demo" npm="epic-react-router" github="tobua/epic-react-router">
+  <Exmpl title="epic-router Demo" npm="epic-router" github="tobua/epic-router">
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
         <Button text="← Back" onClick={() => Router.back()} />
@@ -54,5 +54,5 @@ createRoot(document.body).render(
       </div>
       <Page />
     </div>
-  </Exmpl>
+  </Exmpl>,
 )

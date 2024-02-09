@@ -1,14 +1,13 @@
 {
-  "name": "epic-react-router",
-  "description": "MobX based Router for the Web and React Native.",
+  "name": "epic-router",
+  "description": "Router for the Web and React Native.",
   "version": "0.0.0-development",
-  "repository": "github:tobua/epic-react-router",
-  "homepage": "https://epic-react-router.vercel.app",
+  "repository": "github:tobua/epic-router",
+  "homepage": "https://epic-router.vercel.app",
   "license": "MIT",
   "author": "Matthias Giger",
   "scripts": {
     "build": "padua build",
-    "start": "padua watch",
     "test": "padua test"
   },
   "padua": {
@@ -20,22 +19,23 @@
   },
   "dependencies": {
     "history": "^5.3.0",
-    "query-string": "^8.1.0",
+    "query-string": "^8.2.0",
     "url-join": "^5.0.0"
   },
   "devDependencies": {
+    "@happy-dom/global-registrator": "^13.3.8",
+    "@testing-library/react": "^14.2.1",
+    "@types/bun": "^1.0.5",
     "@types/history": "^4.7.11",
-    "@types/react": "^18.2.28",
-    "mobx": "^6.10.2",
-    "mobx-react-lite": "^4.0.5",
-    "padua": "^2.0.6",
+    "@types/react": "^18.2.55",
+    "@types/react-test-renderer": "^18.0.7",
+    "padua": "^2.0.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-test-renderer": "^18.2.0"
   },
   "peerDependencies": {
-    "mobx": ">= 5",
-    "mobx-react-lite": ">= 3",
+    "epic-state": ">= 0.3",
     "react": ">= 18"
   },
   "type": "module",
@@ -51,7 +51,7 @@
     "index.tsx"
   ],
   "keywords": [
-    "mobx",
+    "state",
     "react",
     "router",
     "web"
@@ -81,6 +81,9 @@
     "transformIgnorePatterns": [
       "/node_modules/(?!url-join|query-string|decode-uri-component|split-on-first|filter-obj).*/"
     ]
+  },
+  "publishConfig": {
+    "provenance": false
   },
   "engines": {
     "node": ">= 18"

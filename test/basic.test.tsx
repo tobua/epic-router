@@ -1,18 +1,22 @@
+/// <reference lib="dom" />
+
+import './setup-dom'
 import React from 'react'
-import { create, act } from 'react-test-renderer'
-import { Page, Router } from '../index'
+import { test, expect } from 'bun:test'
+import { render } from '@testing-library/react'
+import { Page, Router, history } from '../index'
 
 const Overview = () => <p>Overview</p>
-const OverviewMarkup = create(<Overview />).toJSON()
+const { asFragment: OverviewMarkup } = render(<Overview />)
 function About() {
   return <p>About</p>
 }
-const AboutMarkup = create(<About />).toJSON()
+const { asFragment: AboutMarkup } = render(<About />)
 const Article = ({ id }: { id: string }) => <p>Article: {id}</p>
 const Custom404 = () => <p>Page not found</p>
-const Custom404Markup = create(<Custom404 />).toJSON()
-const Article5Markup = create(<Article id="5" />).toJSON()
-const Fragment = (name: string, count: number) => (
+const { asFragment: Custom404Markup } = render(<Custom404 />)
+const { asFragment: Article5Markup } = render(<Article id="5" />)
+const FragmentPage = (name: string, count: number) => (
   <>
     <p>{name}</p>
     <span>{count}</span>
@@ -25,67 +29,74 @@ Router.setPages(
     about: About,
     article: Article,
     static: <p>Hello</p>,
-    fragment: Fragment,
+    fragment: FragmentPage,
     404: Custom404,
   },
-  'overview'
+  'overview',
 )
 
+const wait = (time = 1) =>
+  new Promise((done) => {
+    setTimeout(done, time * 10)
+  })
+
+const serializer = new XMLSerializer()
+const serializeFragment = (asFragment: () => DocumentFragment) =>
+  serializer.serializeToString(asFragment())
+
+const page = render(<Page />)
+
 test('Intial page is rendered without interaction.', () => {
-  const page = create(<Page />).toJSON()
-  expect(page).toEqual(OverviewMarkup)
-  expect(Router.history.location.pathname).toEqual('/')
+  expect(serializeFragment(page.asFragment)).toEqual(serializeFragment(OverviewMarkup))
+  expect(Router.route).toBe('overview')
+  expect(history.location.pathname).toEqual('/')
 })
 
-test('go: Switches to page.', () => {
-  act(() => {
-    Router.go('about')
-  })
-  const page = create(<Page />).toJSON()
-  expect(page).toEqual(AboutMarkup)
-  expect(Router.history.location.pathname).toEqual('/about')
+test('go: Switches to page.', async () => {
+  Router.go('about')
+  await wait()
+  expect(serializeFragment(page.asFragment)).toEqual(serializeFragment(AboutMarkup))
+  expect(Router.route).toBe('about')
+  expect(history.location.pathname).toEqual('/about')
+})
+
+test('go: Can rerender already rendered page.', async () => {
+  // NOTE this only works with a workaround preventing rerender (needs investigation).
+  Router.go('about')
+  await wait()
+  expect(serializeFragment(page.asFragment)).toEqual(serializeFragment(AboutMarkup))
+  expect(Router.route).toBe('about')
+  expect(history.location.pathname).toEqual('/about')
 })
 
 test('back: Goes back to the initial page.', async () => {
-  act(() => {
-    Router.back()
-  })
-  // Takes some time until back has happened.
-  await new Promise((done) => {
-    setTimeout(done, 100)
-  })
-  const page = create(<Page />).toJSON()
-  expect(page).toEqual(OverviewMarkup)
-  expect(Router.history.location.pathname).toEqual('/')
+  Router.back()
+  await wait()
+  expect(serializeFragment(page.asFragment)).toEqual(serializeFragment(OverviewMarkup))
+  expect(history.location.pathname).toEqual('/')
 })
 
-test('go: Switches to page with parameters.', () => {
-  act(() => {
-    Router.go('article', { id: 5 })
-  })
-  const page = create(<Page />).toJSON()
-  expect(page).toEqual(Article5Markup)
-  expect(Router.history.location.pathname).toEqual('/article')
-  expect(Router.history.location.search).toEqual('?id=5')
+test('go: Switches to page with parameters.', async () => {
+  Router.go('article', { id: 5 })
+  await wait()
+  expect(serializeFragment(page.asFragment)).toEqual(serializeFragment(Article5Markup))
+  expect(history.location.pathname).toEqual('/article')
+  expect(history.location.search).toEqual('?id=5')
 })
 
-test('go: Initial route is found on /.', () => {
+test('go: Initial route is found on /.', async () => {
   expect(Router.initialRoute).toEqual('overview')
-  act(() => {
-    Router.go(Router.initialRoute)
-  })
-  const page = create(<Page />).toJSON()
-  expect(page).toEqual(OverviewMarkup)
+  Router.go(Router.initialRoute)
+  await wait()
+  expect(serializeFragment(page.asFragment)).toEqual(serializeFragment(OverviewMarkup))
   expect(Router.route).toEqual('overview')
-  expect(Router.history.location.pathname).toEqual('/')
-  expect(Router.history.location.search).toEqual('')
+  expect(history.location.pathname).toEqual('/')
+  expect(history.location.search).toEqual('')
 })
 
-test('go: Missing route shows 404 fallback in page.', () => {
-  act(() => {
-    Router.go('missing')
-  })
-  const page = create(<Page />).toJSON()
-  expect(page).toEqual(Custom404Markup)
-  expect(Router.history.location.pathname).toEqual('/missing')
+test('go: Missing route shows 404 fallback in page.', async () => {
+  Router.go('missing')
+  await wait()
+  expect(serializeFragment(page.asFragment)).toEqual(serializeFragment(Custom404Markup))
+  expect(history.location.pathname).toEqual('/missing')
 })

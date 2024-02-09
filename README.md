@@ -1,20 +1,20 @@
-<p align="center">
-  <img src="https://github.com/tobua/epic-react-router/raw/main/logo.png" alt="epic-react-router" width="180">
-</p>
+# epic-router
 
-# epic-react-router
+<img align="right" src="https://github.com/tobua/epic-router/raw/main/logo.svg" width="30%" alt="Router Logo" />
 
-[![Demo](https://img.shields.io/static/v1?label=epic-react-router&message=Demo&color=brightgreen)](https://epic-react-router.vercel.app)
-[![npm](https://img.shields.io/npm/v/epic-react-router)](https://npmjs.com/epic-react-router)
+Router for the Web and React Native.
 
-MobX based router for React and React Native.
+- Navigate between different screens
+- Handles browser history
+- Supports back and forward button
+- 404 error page
 
 ## Installation
 
 ```sh
-npm install epic-react-router
+npm install epic-router
 # Install peer dependencies if not yet installed.
-npm install mobx mobx-react-lite react
+npm install epic-state react
 ```
 
 ## Usage
@@ -22,7 +22,7 @@ npm install mobx mobx-react-lite react
 ```jsx
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import { Router, Page } from 'epic-react-router'
+import { Router, Page } from 'epic-router'
 
 // Declare some components used as pages.
 const Overview = () => <p>Overview</p>
@@ -54,7 +54,7 @@ createRoot(document.body).render(
 ## `<Page />`
 
 ```js
-import { Page } from 'epic-react-router'
+import { Page } from 'epic-router'
 ```
 
 Use the `<Page />` component anywhere in your layout to display the current page. Any props you pass to it will be handed over to the page components themselves:
@@ -66,7 +66,7 @@ Use the `<Page />` component anywhere in your layout to display the current page
 ## Router
 
 ```js
-import { Router } from 'epic-react-router'
+import { Router } from 'epic-router'
 ```
 
 The `Router`-Store can be accessed from anywhere to access, configure and modify the state of the Router.
@@ -113,7 +113,7 @@ Router.history => History
 The `404` page can be set to show a custom error page when a route is not found.
 
 ```tsx
-import { Router } from 'epic-react-router'
+import { Router } from 'epic-router'
 
 const Custom404 = () => <p>Page Not Found!</p>
 

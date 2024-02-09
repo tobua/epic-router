@@ -1,18 +1,21 @@
-import React, { ReactNode } from 'react'
-import { observable, action, computed, makeObservable } from 'mobx'
-import { observer } from 'mobx-react-lite'
-import { History, createBrowserHistory, createMemoryHistory } from 'history'
+import React, { useEffect } from 'react'
+import { state } from 'epic-state'
+import { connect } from 'epic-state/react'
+import { createBrowserHistory, createMemoryHistory } from 'history'
 import queryString from 'query-string'
 import join from 'url-join'
+import type { Input, RouterState } from './types'
 
 const createHistory = () => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'test') {
     return createBrowserHistory()
   }
 
-  // No URL for ReactNative etc.
+  // No URL for ReactNative and Testing (happy-dom doesn't work otherwise).
   return createMemoryHistory()
 }
+
+export const history = createHistory()
 
 const removeLeadingSlash = (path: string) => path.replace(/^\/*/, '')
 
@@ -38,18 +41,31 @@ function Error(message: JSX.Element) {
   return () => <div style={{ color: 'red', fontWeight: 'bold' }}>{message}</div>
 }
 
-const parsePath = (path: string) => {
+function pathnameToRoute(Router?: RouterState, location = history.location) {
+  let name = location.pathname
+
   const publicUrl = removeLeadingSlash(process.env.PUBLIC_URL ?? '')
-  const trimmedPath = removeLeadingSlash(path)
+  name = removeLeadingSlash(name) // Cleanup slash.
 
   if (publicUrl) {
-    return removeLeadingSlash(trimmedPath.replace(publicUrl, ''))
+    // Cleanup public url part.
+    name = removeLeadingSlash(name.replace(publicUrl, ''))
   }
 
-  return trimmedPath
+  if (name === '' && Router && Router.initialRoute) {
+    return Router.initialRoute
+  }
+
+  return name !== '' ? name : undefined
 }
 
-const writePath = (path: string) => {
+function getSearchParameters(location = history.location) {
+  const { search } = location
+  if (!search || search.length === 0) return {}
+  return queryString.parse(search)
+}
+
+function writePath(path: string) {
   const publicUrl = removeLeadingSlash(process.env.PUBLIC_URL ?? '')
 
   if (publicUrl) {
@@ -64,147 +80,105 @@ const writePath = (path: string) => {
   return join('/', path)
 }
 
-type Input = ReactNode | ReactNode[] | ((...args: any[]) => JSX.Element)
+export const Router = state<RouterState>({
+  // State
+  initialRoute: undefined,
+  pages: {},
+  route: pathnameToRoute(),
+  parameters: getSearchParameters(),
+  // Actions
+  go(route: string, parameters = {}, historyState: object = {}, replace = false) {
+    // Workaround for newly introduced issue.
+    if (route === Router.route) return
+    Router.route = route
+    Router.parameters = parameters
 
-class RouterStore {
-  initialRoute: string
-  pages = {}
-  route: string = null
-  parameters = {}
-  history: History = null
+    const searchParameters = Object.keys(parameters).length
+      ? `?${queryString.stringify(parameters)}`
+      : ''
 
-  constructor() {
-    makeObservable(this, {
-      route: observable,
-      parameters: observable,
-      go: action,
-      initial: action,
-      setPages: action,
-      addPage: action,
-      // @ts-ignore
-      listener: action,
-      Page: computed,
-    })
-
-    this.history = createHistory()
-
-    const { search, pathname } = this.history.location
-
-    const path = parsePath(pathname)
-
-    this.history.listen(this.listener.bind(this))
-
-    if (path && path.length > 0) {
-      this.route = path
-    }
-
-    if (!search || search.length === 0) {
-      return
-    }
-
-    this.parameters = queryString.parse(search)
-  }
-
-  go(route: string, parameters = {}, state: object = {}, replace = false) {
-    this.route = route
-    this.parameters = parameters
-
-    const search = Object.keys(parameters).length ? `?${queryString.stringify(parameters)}` : ''
-
-    if (route === this.initialRoute && !Object.keys(parameters).length) {
+    if (route === Router.initialRoute && !Object.keys(parameters).length) {
       // eslint-disable-next-line no-param-reassign
       route = ''
     }
 
-    const historyAction = replace ? this.history.replace : this.history.push
+    const historyAction = replace ? history.replace : history.push
     // WORKAROUND https://github.com/ReactTraining/history/issues/814
     historyAction(
       {
         hash: '',
-        search,
+        search: searchParameters,
         pathname: writePath(route),
       },
-      state
+      historyState,
     )
-  }
-
-  // Static would require instantiation and another import.
-  // eslint-disable-next-line class-methods-use-this
+  },
   back() {
-    this.history.back()
-  }
-
-  // eslint-disable-next-line class-methods-use-this
+    history.back()
+  },
   forward() {
-    this.history.forward()
-  }
-
+    history.forward()
+  },
   initial() {
-    this.route = this.initialRoute
-    this.history.push(writePath(this.route))
-  }
-
+    Router.route = Router.initialRoute
+    history.push(writePath(Router.route))
+  },
   setPages(pages: { [key: string]: Input }, initialRoute: string) {
-    this.pages = pages
-    this.initialRoute = initialRoute
+    Router.pages = pages
+    Router.initialRoute = initialRoute
 
-    if (!this.route) {
-      this.route = initialRoute
+    if (!Router.route) {
+      Router.route = initialRoute
     }
-  }
-
+  },
   addPage(route: string, component: Input) {
-    this.pages[route] = component
-  }
-
+    Router.pages[route] = component
+  },
+  // Retrieve current state from history, was private.
+  listener({ location }) {
+    Router.parameters = Object.assign(getSearchParameters(location), location.state ?? {})
+    Router.route = pathnameToRoute(Router, location)
+  },
+  // Derivations
   get Page() {
-    if (process.env.NODE_ENV !== 'production' && (!this.pages || this.initialRoute === undefined)) {
+    if (
+      process.env.NODE_ENV !== 'production' &&
+      (!Router.pages || Router.initialRoute === undefined)
+    ) {
       return Error(
         <span>
           No <Code>pages</Code> or <Code>initialRoute</Code> configured, configure with{' '}
           <Code>Router.setPages(pages, initialRoute)</Code>.
-        </span>
+        </span>,
       )
     }
 
-    if (this.route === '') {
-      return this.pages[this.initialRoute]
+    if (Router.route === '') {
+      return Router.pages[Router.initialRoute]
     }
 
-    if (!this.pages[this.route]) {
-      return (
-        this.pages['404'] ??
-        Error(
-          process.env.NODE_ENV === 'production' ? (
-            <span>Page not found!</span>
-          ) : (
-            <span>
-              Route <Code>/{this.route}</Code> has no associated page!
-            </span>
-          )
-        )
+    if (!Router.pages[Router.route]) {
+      const userErrorPage = Router.pages['404']
+      if (typeof userErrorPage !== 'undefined') return Router.pages['404']
+      return Error(
+        process.env.NODE_ENV === 'production' ? (
+          <span>Page not found!</span>
+        ) : (
+          <span>
+            Route <Code>/{Router.route}</Code> has no associated page!
+          </span>
+        ),
       )
     }
 
-    return this.pages[this.route]
-  }
+    return Router.pages[Router.route]
+  },
+  // Plugins, connect state to React.
+  plugin: connect,
+})
 
-  // Retrieve current state from history.
-  private listener({ location }) {
-    this.parameters = Object.assign(queryString.parse(location.search), location.state ?? {})
-
-    let parsedPath = parsePath(location.pathname)
-
-    if (parsedPath === '') {
-      parsedPath = this.initialRoute
-    }
-
-    this.route = removeLeadingSlash(parsedPath)
-  }
+export function Page({ ...props }: any) {
+  // Listener returns cleanup method
+  useEffect(() => history.listen(Router.listener), [])
+  return <Router.Page {...props} {...Router.parameters} />
 }
-
-export const Router = new RouterStore()
-
-export const Page = observer(({ ...props }: any) => (
-  <Router.Page {...props} {...Router.parameters} />
-))
