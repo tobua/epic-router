@@ -5,6 +5,7 @@
     "publicPath": "/"
   },
   "dependencies": {
+    "epic-router": "^4.1.0",
     "exmpl": "^3.1.0",
     "papua": "^5.9.7",
     "preact": "^10.19.5"
