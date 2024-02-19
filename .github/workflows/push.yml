@@ -17,8 +17,7 @@ jobs:
       - name: 🚧 Build
         run: bun run build
       - name: 🧪 Test
-        # Currently only one instance supported, needs reset method on unmount.
-        run: bun test -- basic
+        run: bun test
       - name: 🛠️ Build Demo
         run: |
           cd demo

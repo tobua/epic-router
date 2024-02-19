@@ -1,9 +1,9 @@
-/// <reference lib="dom" />
-
+/* eslint-disable react/react-in-jsx-scope */
 import './setup-dom'
+// eslint-disable-next-line import/no-extraneous-dependencies
 import React from 'react'
-import { test, expect } from 'bun:test'
-import { render } from '@testing-library/react'
+import { test, expect, mock } from 'bun:test'
+import { render } from '@testing-library/preact'
 import { Page, Router, history } from '../index'
 
 const Overview = () => <p>Overview</p>
@@ -44,7 +44,7 @@ const serializer = new XMLSerializer()
 const serializeFragment = (asFragment: () => DocumentFragment) =>
   serializer.serializeToString(asFragment())
 
-const page = render(<Page />)
+let page = render(<Page />)
 
 test('Intial page is rendered without interaction.', () => {
   expect(serializeFragment(page.asFragment)).toEqual(serializeFragment(OverviewMarkup))
@@ -61,7 +61,7 @@ test('go: Switches to page.', async () => {
 })
 
 test('go: Can rerender already rendered page.', async () => {
-  // NOTE this only works with a workaround preventing rerender (needs investigation).
+  // NOTE this used to require a workaround as double rendering lead to an error.
   Router.go('about')
   await wait()
   expect(serializeFragment(page.asFragment)).toEqual(serializeFragment(AboutMarkup))
@@ -70,6 +70,7 @@ test('go: Can rerender already rendered page.', async () => {
 })
 
 test('back: Goes back to the initial page.', async () => {
+  Router.back()
   Router.back()
   await wait()
   expect(serializeFragment(page.asFragment)).toEqual(serializeFragment(OverviewMarkup))
@@ -99,4 +100,35 @@ test('go: Missing route shows 404 fallback in page.', async () => {
   await wait()
   expect(serializeFragment(page.asFragment)).toEqual(serializeFragment(Custom404Markup))
   expect(history.location.pathname).toEqual('/missing')
+})
+
+test('Props handed to Page can be accessed from pages.', async () => {
+  Router.reset()
+
+  const Overview2 = () => <p>Overview</p>
+  const Error = ({ onError }: { onError: (message: string) => any }) => (
+    <p>sending an error {onError && onError('whatt?')}</p>
+  )
+
+  const { asFragment: Overview2Markup } = render(<Overview2 />)
+  const { asFragment: ErrorMarkup } = render(<Error onError={(value = '') => value} />)
+
+  Router.setPages(
+    {
+      overview: Overview,
+      error: Error,
+    },
+    'overview',
+  )
+
+  Router.go('overview')
+
+  const errorMock = mock(() => 'whatt?')
+  expect(errorMock.mock.calls.length).toEqual(0)
+  page = render(<Page onError={errorMock} />)
+  expect(serializeFragment(page.asFragment)).toEqual(serializeFragment(Overview2Markup))
+  Router.go('error')
+  await wait()
+  expect(errorMock.mock.calls.length).toEqual(1)
+  expect(serializeFragment(page.asFragment)).toEqual(serializeFragment(ErrorMarkup))
 })

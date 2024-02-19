@@ -1,5 +1,5 @@
-import { ReactNode } from 'react'
-import type { connect } from 'epic-state/react'
+import type { ReactNode, JSX } from 'react'
+import type { connect } from 'epic-state/preact'
 
 export type Input = ReactNode | ReactNode[] | ((...args: any[]) => JSX.Element)
 
@@ -14,6 +14,7 @@ export type RouterState = {
   initial: () => void
   setPages: (pages: { [key: string]: Input }, initialRoute: string) => void
   addPage: (route: string, component: Input) => void
+  reset: () => void
   listener: ({ location, action }) => void
   Page: any
   plugin: typeof connect

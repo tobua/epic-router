@@ -1,5 +1,4 @@
-import React from 'react'
-import { createRoot } from 'react-dom/client'
+import { render } from 'preact'
 import { Exmpl } from 'exmpl'
 import { Router, Page } from 'epic-router'
 
@@ -37,7 +36,7 @@ const Button = ({ text, onClick }) => (
   </button>
 )
 
-createRoot(document.body).render(
+render(
   <Exmpl title="epic-router Demo" npm="epic-router" github="tobua/epic-router">
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
@@ -55,4 +54,5 @@ createRoot(document.body).render(
       <Page />
     </div>
   </Exmpl>,
+  document.body,
 )

@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
 import { state } from 'epic-state'
-import { connect } from 'epic-state/react'
+import { connect } from 'epic-state/preact'
 import { createBrowserHistory, createMemoryHistory } from 'history'
 import queryString from 'query-string'
 import join from 'url-join'
+import type { JSX } from 'react'
 import type { Input, RouterState } from './types'
 
 const createHistory = () => {
@@ -88,8 +88,6 @@ export const Router = state<RouterState>({
   parameters: getSearchParameters(),
   // Actions
   go(route: string, parameters = {}, historyState: object = {}, replace = false) {
-    // Workaround for newly introduced issue.
-    if (route === Router.route) return
     Router.route = route
     Router.parameters = parameters
 
@@ -130,6 +128,11 @@ export const Router = state<RouterState>({
     if (!Router.route) {
       Router.route = initialRoute
     }
+  },
+  reset() {
+    Router.pages = {}
+    Router.initialRoute = undefined
+    Router.route = undefined
   },
   addPage(route: string, component: Input) {
     Router.pages[route] = component
@@ -177,8 +180,10 @@ export const Router = state<RouterState>({
   plugin: connect,
 })
 
-export function Page({ ...props }: any) {
-  // Listener returns cleanup method
-  useEffect(() => history.listen(Router.listener), [])
+const removeListener = history.listen(Router.listener)
+
+export const unlisten = removeListener
+
+export function Page(props: any): JSX.Element {
   return <Router.Page {...props} {...Router.parameters} />
 }

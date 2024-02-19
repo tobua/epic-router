@@ -7,13 +7,12 @@
   "license": "MIT",
   "author": "Matthias Giger",
   "scripts": {
-    "build": "padua build",
-    "test": "padua test"
+    "build": "padua build"
   },
   "padua": {
     "tsconfig": {
       "compilerOptions": {
-        "target": "esnext"
+        "jsxImportSource": "preact"
       }
     }
   },
@@ -24,28 +23,33 @@
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^13.3.8",
-    "@testing-library/react": "^14.2.1",
-    "@types/bun": "^1.0.5",
+    "@testing-library/preact": "^3.2.3",
+    "@types/bun": "^1.0.6",
     "@types/history": "^4.7.11",
-    "@types/react": "^18.2.55",
-    "@types/react-test-renderer": "^18.0.7",
-    "padua": "^2.0.9",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-test-renderer": "^18.2.0"
+    "@types/react": "^18.2.56",
+    "padua": "^3.0.0",
+    "preact": "^10.19.5"
   },
   "peerDependencies": {
     "epic-state": ">= 0.3",
-    "react": ">= 18"
+    "preact": ">= 10"
+  },
+  "peerDependenciesMeta": {
+    "preact": {
+      "optional": true
+    }
   },
   "type": "module",
   "sideEffects": false,
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
   "exports": {
-    "default": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
-  "source": "index.tsx",
-  "types": "dist/index.d.ts",
+  "source": "./index.tsx",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist",
     "index.tsx"
@@ -61,29 +65,12 @@
     "extends": "./node_modules/padua/configuration/eslint.cjs",
     "rules": {
       "@typescript-eslint/lines-between-class-members": 0,
-      "react/function-component-definition": 0
+      "react/function-component-definition": 0,
+      "react/react-in-jsx-scope": 0
     }
   },
-  "jest": {
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "dist"
-    ],
-    "transform": {
-      "^.+\\.jsx?$": [
-        "babel-jest",
-        {
-          "configFile": "./node_modules/padua/configuration/.babelrc"
-        }
-      ],
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "transformIgnorePatterns": [
-      "/node_modules/(?!url-join|query-string|decode-uri-component|split-on-first|filter-obj).*/"
-    ]
-  },
   "publishConfig": {
-    "provenance": false
+    "provenance": true
   },
   "engines": {
     "node": ">= 18"
