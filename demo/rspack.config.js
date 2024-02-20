@@ -6,6 +6,7 @@ export default (configuration) => {
     'react-dom/test-utils': 'preact/test-utils',
     'react-dom': 'preact/compat',
     'react/jsx-runtime': 'preact/jsx-runtime',
+    'react/jsx-dev-runtime': 'preact/jsx-dev-runtime',
   }
 
   return configuration
