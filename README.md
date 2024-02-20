@@ -2,19 +2,20 @@
 
 <img align="right" src="https://github.com/tobua/epic-router/raw/main/logo.svg" width="30%" alt="Router Logo" />
 
-Router for the Web and React Native.
+Router for the Web.
 
 - Navigate between different screens
 - Handles browser history
 - Supports back and forward button
 - 404 error page
+- See [reactigation](https://github.com/tobua/reactigation) for a React Native router
 
 ## Installation
 
 ```sh
 npm install epic-router
-# Install peer dependencies if not yet installed.
-npm install epic-state react
+# Install a JSX rendering framework.
+npm install preact
 ```
 
 ## Usage
@@ -124,4 +125,4 @@ Router.setPages({
 
 ## Notes
 
-If `process.env.PUBLIC_URL` is set during build the path will be adapted accordingly.
+If `process.env.PUBLIC_URL` is set during build the path will be adapted accordingly. This router assumes an SPA (Single Page Application) environment on the server. For initial URL requests to arrive at the router the server has to be instructed to rewrite requests to the index. See [Legacy SPA Fallback](https://vercel.com/docs/projects/project-configuration#legacy-spa-fallback) on how to configure this for Vercel in `vercel.json`.
