@@ -1,10 +1,12 @@
 import { state } from 'epic-state'
-import { connect } from 'epic-state/preact'
+import type { connect as preactConnect } from 'epic-state/preact'
 import { createBrowserHistory, createMemoryHistory } from 'history'
 import queryString from 'query-string'
+import type { ComponentPropsWithoutRef, JSX } from 'react'
 import join from 'url-join'
-import type { JSX } from 'react'
-import type { Input, RouterState } from './types'
+import type { PageComponent, RouterState } from './types'
+
+let Router: RouterState = {} as RouterState
 
 const createHistory = () => {
   if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'test') {
@@ -37,14 +39,14 @@ function Code({ children }: { children: string | string[] }) {
   )
 }
 
-function Error(message: JSX.Element) {
+function ErrorPage(message: JSX.Element): PageComponent {
   return () => <div style={{ color: 'red', fontWeight: 'bold' }}>{message}</div>
 }
 
-function pathnameToRoute(Router?: RouterState, location = history.location) {
+function pathnameToRoute(location = history.location) {
   let name = location.pathname
 
-  const publicUrl = removeLeadingSlash(process.env.PUBLIC_URL ?? '')
+  const publicUrl = removeLeadingSlash((typeof process !== 'undefined' && process.env.PUBLIC_URL) || '')
   name = removeLeadingSlash(name) // Cleanup slash.
 
   if (publicUrl) {
@@ -61,7 +63,9 @@ function pathnameToRoute(Router?: RouterState, location = history.location) {
 
 function getSearchParameters(location = history.location) {
   const { search } = location
-  if (!search || search.length === 0) return {}
+  if (!search || search.length === 0) {
+    return {}
+  }
   return queryString.parse(search)
 }
 
@@ -80,110 +84,111 @@ function writePath(path: string) {
   return join('/', path)
 }
 
-export const Router = state<RouterState>({
-  // State
-  initialRoute: undefined,
-  pages: {},
-  route: pathnameToRoute(),
-  parameters: getSearchParameters(),
-  // Actions
-  go(route: string, parameters = {}, historyState: object = {}, replace = false) {
-    Router.route = route
-    Router.parameters = parameters
+export function create(pages: { [key: string]: PageComponent }, initialRoute?: string, connect?: typeof preactConnect) {
+  if (!pages || Object.keys(pages).length === 0) {
+    // biome-ignore lint/suspicious/noConsoleLog: Validation error for user.
+    console.log('Invalid pages argument provided to create().')
+    return {}
+  }
 
-    const searchParameters = Object.keys(parameters).length
-      ? `?${queryString.stringify(parameters)}`
-      : ''
-
-    if (route === Router.initialRoute && !Object.keys(parameters).length) {
-      // eslint-disable-next-line no-param-reassign
-      route = ''
-    }
-
-    const historyAction = replace ? history.replace : history.push
-    // WORKAROUND https://github.com/ReactTraining/history/issues/814
-    historyAction(
-      {
-        hash: '',
-        search: searchParameters,
-        pathname: writePath(route),
-      },
-      historyState,
-    )
-  },
-  back() {
-    history.back()
-  },
-  forward() {
-    history.forward()
-  },
-  initial() {
-    Router.route = Router.initialRoute
-    history.push(writePath(Router.route))
-  },
-  setPages(pages: { [key: string]: Input }, initialRoute: string) {
-    Router.pages = pages
-    Router.initialRoute = initialRoute
-
-    if (!Router.route) {
-      Router.route = initialRoute
-    }
-  },
-  reset() {
-    Router.pages = {}
-    Router.initialRoute = undefined
-    Router.route = undefined
-  },
-  addPage(route: string, component: Input) {
-    Router.pages[route] = component
-  },
-  // Retrieve current state from history, was private.
-  listener({ location }) {
-    Router.parameters = Object.assign(getSearchParameters(location), location.state ?? {})
-    Router.route = pathnameToRoute(Router, location)
-  },
-  // Derivations
-  get Page() {
-    if (
-      process.env.NODE_ENV !== 'production' &&
-      (!Router.pages || Router.initialRoute === undefined)
-    ) {
-      return Error(
-        <span>
-          No <Code>pages</Code> or <Code>initialRoute</Code> configured, configure with{' '}
-          <Code>Router.setPages(pages, initialRoute)</Code>.
-        </span>,
-      )
-    }
-
-    if (Router.route === '') {
-      return Router.pages[Router.initialRoute]
-    }
-
-    if (!Router.pages[Router.route]) {
-      const userErrorPage = Router.pages['404']
-      if (typeof userErrorPage !== 'undefined') return Router.pages['404']
-      return Error(
-        process.env.NODE_ENV === 'production' ? (
-          <span>Page not found!</span>
-        ) : (
+  Router = state<RouterState>({
+    // State
+    initialRoute: initialRoute ?? Object.keys(pages)[0] ?? '', // Use the first page as the initial route if not provided.
+    pages,
+    route: pathnameToRoute() ?? initialRoute ?? '',
+    parameters: getSearchParameters(),
+    // Plugins, connect state to React.
+    plugin: connect,
+    // Retrieve current state from history, was private.
+    listener({ location }) {
+      Router.parameters = Object.assign(getSearchParameters(location), location.state ?? {})
+      Router.route = pathnameToRoute(location) ?? ''
+    },
+    // Derivations
+    get Page() {
+      if (process.env.NODE_ENV !== 'production' && (!Router.pages || Router.initialRoute === undefined)) {
+        return ErrorPage(
           <span>
-            Route <Code>/{Router.route}</Code> has no associated page!
-          </span>
-        ),
-      )
-    }
+            No <Code>pages</Code> or <Code>initialRoute</Code> configured, configure with <Code>Router.setPages(pages, initialRoute)</Code>.
+          </span>,
+        )
+      }
 
-    return Router.pages[Router.route]
-  },
-  // Plugins, connect state to React.
-  plugin: connect,
-})
+      if (Router.route === '') {
+        return Router.pages[Router.initialRoute] as PageComponent
+      }
 
-const removeListener = history.listen(Router.listener)
+      if (!Router.pages[Router.route]) {
+        const userErrorPage = Router.pages['404']
+        if (typeof userErrorPage !== 'undefined') {
+          return Router.pages['404'] as PageComponent
+        }
+        return ErrorPage(
+          process.env.NODE_ENV === 'production' ? (
+            <span>Page not found!</span>
+          ) : (
+            <span>
+              Route <Code>/{Router.route}</Code> has no associated page!
+            </span>
+          ),
+        )
+      }
 
-export const unlisten = removeListener
+      return Router.pages[Router.route] as PageComponent
+    },
+  })
 
-export function Page(props: any): JSX.Element {
+  const removeListener = history.listen(Router.listener)
+
+  return { Router, removeListener }
+}
+
+export function go(route: string, parameters = {}, historyState: object = {}, replace = false) {
+  Router.route = route
+  Router.parameters = parameters
+
+  const searchParameters = Object.keys(parameters).length ? `?${queryString.stringify(parameters)}` : ''
+
+  if (route === Router.initialRoute && !Object.keys(parameters).length) {
+    // biome-ignore lint/style/noParameterAssign: Existing logic, might be improved.
+    route = ''
+  }
+
+  const historyAction = replace ? history.replace : history.push
+  // WORKAROUND https://github.com/ReactTraining/history/issues/814
+  historyAction(
+    {
+      hash: '',
+      search: searchParameters,
+      pathname: writePath(route),
+    },
+    historyState,
+  )
+}
+
+export function back() {
+  history.back()
+}
+
+export function forward() {
+  history.forward()
+}
+
+export function initial() {
+  Router.route = Router.initialRoute
+  history.push(writePath(Router.route))
+}
+
+export function reset() {
+  Router.pages = {}
+  Router.initialRoute = ''
+  Router.route = ''
+}
+
+export function addPage(route: string, component: PageComponent) {
+  Router.pages[route] = component
+}
+
+export function Page(props: ComponentPropsWithoutRef<'div'>): JSX.Element {
   return <Router.Page {...props} {...Router.parameters} />
 }

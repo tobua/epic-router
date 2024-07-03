@@ -1,6 +1,7 @@
-import { render } from 'preact'
+import { Page, back, create, forward, go } from 'epic-router'
+import { connect } from 'epic-state/preact'
 import { Exmpl } from 'exmpl'
-import { Router, Page } from 'epic-router'
+import { render } from 'preact'
 
 const Overview = () => <span>Overview</span>
 const About = () => <span>About</span>
@@ -8,7 +9,7 @@ const Article = ({ id }: { id: string }) => <span>Article: {id}</span>
 const Nested = () => <span>Nested</span>
 const Custom404 = () => <span>Page not found!</span>
 
-Router.setPages(
+create(
   {
     overview: Overview,
     about: About,
@@ -17,10 +18,12 @@ Router.setPages(
     404: Custom404,
   },
   'overview',
+  connect,
 )
 
 const Button = ({ text, onClick }) => (
   <button
+    type="button"
     style={{
       border: 'none',
       outline: 'none',
@@ -40,16 +43,16 @@ render(
   <Exmpl title="epic-router Demo" npm="epic-router" github="tobua/epic-router">
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
-        <Button text="← Back" onClick={() => Router.back()} />
-        <Button text="Forward →" onClick={() => Router.forward()} />
+        <Button text="← Back" onClick={() => back()} />
+        <Button text="Forward →" onClick={() => forward()} />
       </div>
       <div style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
-        <Button text="Overview" onClick={() => Router.go('overview')} />
-        <Button text="About" onClick={() => Router.go('about')} />
-        <Button text="Article 1" onClick={() => Router.go('article', { id: 1 })} />
-        <Button text="Article 2" onClick={() => Router.go('article', { id: 2 })} />
-        <Button text="Article 3" onClick={() => Router.go('article', { id: 3 })} />
-        <Button text="Nested/Overview" onClick={() => Router.go('nested/overview')} />
+        <Button text="Overview" onClick={() => go('overview')} />
+        <Button text="About" onClick={() => go('about')} />
+        <Button text="Article 1" onClick={() => go('article', { id: 1 })} />
+        <Button text="Article 2" onClick={() => go('article', { id: 2 })} />
+        <Button text="Article 3" onClick={() => go('article', { id: 3 })} />
+        <Button text="Nested/Overview" onClick={() => go('nested/overview')} />
       </div>
       <Page />
     </div>

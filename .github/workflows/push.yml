@@ -17,7 +17,7 @@ jobs:
       - name: 🚧 Build
         run: bun run build
       - name: 🧪 Test
-        run: bun test
+        run: bun run test
       - name: 📢 Release
         uses: tobua/release-npm-action@v3
         with:
