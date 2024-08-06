@@ -7,10 +7,13 @@ export const rsbuild = defineConfig({
     entry: {
       index: './index.tsx',
     },
+    define: {
+      'process.env.PUBLIC_URL': '"/"',
+    },
   },
   html: {
-    title: 'epic-router Demo with epic-jsx',
-    favicon: '../logo.png',
+    title: 'epic-router Demo with Preact',
+    favicon: '../../logo.png',
   },
   output: {
     assetPrefix: '/epic-router/',
@@ -19,10 +22,11 @@ export const rsbuild = defineConfig({
     rspack: {
       resolve: {
         alias: {
-          react: 'epic-jsx',
-          'react-dom': 'epic-jsx',
-          'react/jsx-runtime': 'epic-jsx',
-          'react/jsx-dev-runtime': 'epic-jsx',
+          react: 'preact/compat',
+          'react-dom/test-utils': 'preact/test-utils',
+          'react-dom': 'preact/compat',
+          'react/jsx-runtime': 'preact/jsx-runtime',
+          'react/jsx-dev-runtime': 'preact/jsx-dev-runtime',
         },
       },
     },

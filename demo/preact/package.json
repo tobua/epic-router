@@ -7,14 +7,14 @@
   "dependencies": {
     "@rsbuild/core": "^1.0.1-beta.10",
     "@rsbuild/plugin-react": "^1.0.1-beta.10",
-    "epic-jsx": "^0.9.0",
     "epic-state": "^0.8.2",
     "exmpl": "^3.1.0",
+    "preact": "^10.23.1",
     "typescript": "^5.5.4",
     "zero-configuration": "^0.17.2"
   },
   "localDependencies": {
-    "epic-router": ".."
+    "epic-router": "../.."
   },
   "trustedDependencies": [
     "zero-configuration"

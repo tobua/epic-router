@@ -8,13 +8,13 @@
   "author": "Matthias Giger",
   "scripts": {
     "check": "biome check --write .",
-    "types": "tsc",
-    "test": "bun test --preload ./test/copy-source.ts"
+    "test": "bun test --preload ./test/copy-source.ts",
+    "types": "tsc"
   },
   "dependencies": {
-    "epic-state": "^0.6.0",
+    "epic-state": "^0.8.2",
     "history": "^5.3.0",
-    "query-string": "^9.0.0",
+    "query-string": "^9.1.0",
     "url-join": "^5.0.0"
   },
   "devDependencies": {
@@ -24,10 +24,11 @@
     "@types/bun": "^1.1.6",
     "@types/history": "^5.0.0",
     "@types/react": "^18.3.3",
-    "epic-jsx": "^0.7.2",
-    "preact": "^10.22.1",
+    "epic-jsx": "^0.9.0",
+    "preact": "^10.23.1",
     "react": "^18.3.1",
-    "zero-configuration": "^0.13.0"
+    "typescript": "^5.5.4",
+    "zero-configuration": "^0.17.2"
   },
   "peerDependencies": {
     "epic-jsx": ">= 0.7",
@@ -80,7 +81,8 @@
       },
       "files": {
         "ignore": [
-          "demo"
+          "demo",
+          "source"
         ]
       }
     },
@@ -99,8 +101,12 @@
         "folder": "test/epic",
         "compilerOptions": {
           "paths": {
-            "react": ["./../../node_modules/epic-jsx"],
-            "react/jsx-dev-runtime": ["./../../node_modules/epic-jsx"]
+            "react": [
+              "./../../node_modules/epic-jsx"
+            ],
+            "react/jsx-dev-runtime": [
+              "./../../node_modules/epic-jsx"
+            ]
           }
         }
       },
@@ -110,8 +116,12 @@
         "compilerOptions": {
           "jsxImportSource": "preact",
           "paths": {
-            "react": ["./../../node_modules/preact/dist/preact.mjs"],
-            "react/jsx-dev-runtime": ["./../../node_modules/preact/jsx-runtime/dist/jsxRuntime.mjs"]
+            "react": [
+              "./../../node_modules/preact/dist/preact.mjs"
+            ],
+            "react/jsx-dev-runtime": [
+              "./../../node_modules/preact/jsx-runtime/dist/jsxRuntime.mjs"
+            ]
           }
         }
       }

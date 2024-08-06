@@ -12,12 +12,11 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
+      - uses: oven-sh/setup-bun@v2
       - run: bun install
-      - name: 🚧 Build
-        run: bun run build
-      - name: 🧪 Test
-        run: bun run test
+      - run: bun check
+      - run: bun types
+      - run: bun run test # Requires copy of source files.
       - name: 📢 Release
         uses: tobua/release-npm-action@v3
         with:

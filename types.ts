@@ -10,7 +10,7 @@ export type RouterState = {
   pages: { [key: string]: PageComponent }
   route: string
   parameters: object
-  Page: PageComponent
+  page: PageComponent
   plugin?: typeof preactConnect
   listener: Listener
 }

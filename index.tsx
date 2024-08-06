@@ -105,7 +105,7 @@ export function create(pages: { [key: string]: PageComponent }, initialRoute?: s
       Router.route = pathnameToRoute(location) ?? ''
     },
     // Derivations
-    get Page() {
+    get page() {
       if (process.env.NODE_ENV !== 'production' && (!Router.pages || Router.initialRoute === undefined)) {
         return ErrorPage(
           <span>
@@ -133,7 +133,6 @@ export function create(pages: { [key: string]: PageComponent }, initialRoute?: s
           ),
         )
       }
-
       return Router.pages[Router.route] as PageComponent
     },
   })
@@ -190,5 +189,5 @@ export function addPage(route: string, component: PageComponent) {
 }
 
 export function Page(props: ComponentPropsWithoutRef<'div'>): JSX.Element {
-  return <Router.Page {...props} {...Router.parameters} />
+  return <Router.page {...props} {...Router.parameters} />
 }

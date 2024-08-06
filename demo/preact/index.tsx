@@ -1,7 +1,7 @@
 import { Page, back, create, forward, go } from 'epic-router'
-import { connect } from 'epic-state/connect'
+import { connect } from 'epic-state/preact'
 import { Exmpl } from 'exmpl'
-import { render } from 'epic-jsx'
+import { render } from 'preact'
 
 const Overview = () => <span>Overview</span>
 const About = () => <span>About</span>
@@ -57,4 +57,5 @@ render(
       <Page />
     </div>
   </Exmpl>,
+  document.body,
 )
