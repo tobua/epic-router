@@ -18,6 +18,7 @@ const createHistory = () => {
 }
 
 export const history = createHistory()
+export const getRouter = () => Router
 
 const removeLeadingSlash = (path: string) => path.replace(/^\/*/, '')
 
@@ -182,6 +183,10 @@ export function reset() {
   Router.pages = {}
   Router.initialRoute = ''
   Router.route = ''
+}
+
+export function route() {
+  return Router.route
 }
 
 export function addPage(route: string, component: PageComponent) {

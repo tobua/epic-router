@@ -15,9 +15,6 @@ export const rsbuild = defineConfig({
     title: 'epic-router Demo with Preact',
     favicon: '../../logo.png',
   },
-  output: {
-    assetPrefix: '/epic-router/',
-  },
   tools: {
     rspack: {
       resolve: {
