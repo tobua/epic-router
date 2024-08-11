@@ -7,6 +7,9 @@ export const rsbuild = defineConfig({
     entry: {
       index: './index.tsx',
     },
+    define: {
+      'process.env.PUBLIC_URL': '"/"',
+    },
   },
   html: {
     title: 'epic-router Demo with epic-jsx',

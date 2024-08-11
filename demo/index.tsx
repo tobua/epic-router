@@ -1,25 +1,24 @@
-import { Page, back, create, forward, go } from 'epic-router'
+import { Page, addPage, back, configure, go, forward } from 'epic-router'
 import { connect } from 'epic-state/connect'
 import { Exmpl } from 'exmpl'
 import { render } from 'epic-jsx'
 
+// TODO not working with globally registered plugin.
+// plugin(connect)
+
+const { router } = configure<{ id: number }>('overview', undefined, undefined, connect)
+
 const Overview = () => <span>Overview</span>
 const About = () => <span>About</span>
-const Article = ({ id }: { id: string }) => <span>Article: {id}</span>
+const Article = () => <span>Article: {router.parameters.id}</span>
 const Nested = () => <span>Nested</span>
 const Custom404 = () => <span>Page not found!</span>
 
-create(
-  {
-    overview: Overview,
-    about: About,
-    article: Article,
-    'nested/overview': Nested,
-    404: Custom404,
-  },
-  'overview',
-  connect,
-)
+addPage('overview', Overview)
+addPage('about', About)
+addPage('article', Article)
+addPage('nested/overview', Nested)
+addPage('404', Custom404)
 
 const Button = ({ text, onClick }) => (
   <button

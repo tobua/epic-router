@@ -13,36 +13,32 @@ Router for the Web.
 ## Installation
 
 ```sh
-npm install epic-router
+bun install epic-router
 # Install a JSX rendering framework.
-npm install preact
+bun install epic-jsx / bun install preact
 ```
 
 ## Usage
 
 ```jsx
-import React from 'react'
-import { createRoot } from 'react-dom/client'
-import { Router, Page } from 'epic-router'
+import { Page, addPage, back, configure, go, forward } from 'epic-router'
+import { connect } from 'epic-state/connect'
+import { render } from 'epic-jsx'
+
+const { router } = configure<{ id: number }>('overview', undefined, undefined, connect)
 
 // Declare some components used as pages.
 const Overview = () => <p>Overview</p>
 const About = () => <p>About</p>
-const Article = ({ id }: { id: string }) => <p>Article: {id}</p>
+const Article = () => <p>Article: {router.parameters.id}</p>
 
-// Configure available and initial pages before rendering.
-Router.setPages(
-  {
-    overview: Overview,
-    'nested/about': About,
-    article: Article,
-    // Custom 404 page for missing routes.
-    404: Custom404
-  },
-  'overview' // Initial page.
-)
+addPage('overview', Overview)
+addPage('nested/about', About)
+addPage('article', Article)
+// Custom 404 page for missing routes.
+addPage('404', () => <p>Not found!</p>)
 
-createRoot(document.body).render(
+render(
   <div>
     <button onClick={() => Router.go('nested/about')}>About</button>
     <button onClick={() => Router.go('article', { id: 2 })}>Article 2</button>
@@ -66,35 +62,22 @@ Use the `<Page />` component anywhere in your layout to display the current page
 
 ## Router
 
-```js
-import { Router } from 'epic-router'
-```
-
-The `Router`-Store can be accessed from anywhere to access, configure and modify the state of the Router.
-
 ```ts
-Router.setPages(pages: { [key: string]: React.ReactNode }, initialRoute: string)
+import { configure, addPage, go, back, forward, initial } from 'epic-router'
+
+// Setup and configure the Router.
+const { router } = configure(initialRoute?: string, homeRoute?: string, initialParameters?: Parameters, connect?: typeof preactConnect)
+// Register a page for a route.
+addPage(route: string | number, component: JSX | ReactNode)
+// Navigates to a route. Parameters will be added to the URL search query and together with the state (both optional) will be passed to the page component as props. If replace is true, `back()` will not lead to the previous page.
+go(route: string, parameters: object = {}, state: object = {}, replace = false)
+// go back one step in the history.
+back()
+// Go forward one step in the history.
+forward()
+// Go to the initial route.
+initial()
 ```
-
-Configure the route keys and their associated components, plus the route to be displayed initially.
-
-```ts
-Router.go(route: string, parameters: object = {}, state: object = {}, replace = false)
-```
-
-Navigates to a route. Parameters will be added to the URL search query and together with the state (both optional) will be passed to the page component as props. If replace is true, `back()` will not lead to the previous page.
-
-`Router.back()` go back one step in the history.
-
-`Router.forward()` go forward one step.
-
-`Router.initial()` go to the initial route.
-
-```ts
-addPage(route: string, component: React.ReactNode)
-```
-
-Add a single page after initialization. This can be useful when pages are loaded on request.
 
 ```ts
 // Currently active route.
@@ -114,13 +97,27 @@ Router.history => History
 The `404` page can be set to show a custom error page when a route is not found.
 
 ```tsx
-import { Router } from 'epic-router'
+import { addPage } from 'epic-router'
 
 const Custom404 = () => <p>Page Not Found!</p>
 
-Router.setPages({
-  404: Custom404,
-})
+addPage(404: Custom404)
+```
+
+### Parameters
+
+Parameters will automatically be added to the URL and are accessible in different ways as shown below.
+
+```tsx
+import { configure, getRouter, type WithRouter } from 'epic-router'
+
+type Parameters = { id: number }
+
+const { router } = configure<Parameters>(...)
+
+const Article = () => <p>Article: {router.parameters.id}</p>
+const ArticleGlobal = () => <p>Article: {getRouter().parameters.id}</p>
+const ArticleProps = ({ router }: WithRouter<Parameters>) => <p>Article: {router.parameters.id}</p>
 ```
 
 ## Notes

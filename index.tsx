@@ -4,9 +4,10 @@ import { createBrowserHistory, createMemoryHistory } from 'history'
 import queryString from 'query-string'
 import type { ComponentPropsWithoutRef, JSX } from 'react'
 import join from 'url-join'
-import type { PageComponent, RouterState } from './types'
+import type { PageComponent, Pages, Parameters, RouterState } from './types'
 
-let Router: RouterState = {} as RouterState
+let router: RouterState<Parameters> = {} as RouterState<Parameters>
+const pages: Pages = {}
 
 const createHistory = () => {
   if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'test') {
@@ -18,7 +19,9 @@ const createHistory = () => {
 }
 
 export const history = createHistory()
-export const getRouter = () => Router
+export const getRouter = () => router
+
+export type WithRouter<T extends object> = { router: { route: string; parameters: T } }
 
 const removeLeadingSlash = (path: string) => path.replace(/^\/*/, '')
 
@@ -55,101 +58,134 @@ function pathnameToRoute(location = history.location) {
     name = removeLeadingSlash(name.replace(publicUrl, ''))
   }
 
-  if (name === '' && Router && Router.initialRoute) {
-    return Router.initialRoute
+  if (name === '' && router && router.initialRoute) {
+    return router.initialRoute
   }
 
   return name !== '' ? name : undefined
 }
 
-function getSearchParameters(location = history.location) {
+function getSearchParameters<T extends Parameters>(location = history.location) {
   const { search } = location
   if (!search || search.length === 0) {
-    return {}
+    return {} as T
   }
-  return queryString.parse(search)
+  return queryString.parse(search) as T
 }
 
-function writePath(path: string) {
+function writePath(route: string) {
   const publicUrl = removeLeadingSlash(process.env.PUBLIC_URL ?? '')
 
+  if (route === getHomeRoute()) {
+    // biome-ignore lint/style/noParameterAssign: Much easier in this case.
+    route = '/'
+  }
+
   if (publicUrl) {
-    return join('/', publicUrl, path)
+    return join('/', publicUrl, route)
   }
 
   // join will not work properly in this case.
-  if (path === '') {
+  if (route === '') {
     return '/'
   }
 
-  return join('/', path)
+  return join('/', route)
 }
 
-export function create(pages: { [key: string]: PageComponent }, initialRoute?: string, connect?: typeof preactConnect) {
-  if (!pages || Object.keys(pages).length === 0) {
-    // biome-ignore lint/suspicious/noConsoleLog: Validation error for user.
-    console.log('Invalid pages argument provided to create().')
-    return {}
-  }
+const getInitialRoute = () => (router.initialRoute || Object.keys(pages)[0]) ?? ''
+const getHomeRoute = () => (router.homeRoute || Object.keys(pages)[0]) ?? ''
 
-  Router = state<RouterState>({
+export function configure<T extends Parameters>(
+  initialRoute?: string,
+  homeRoute?: string,
+  initialParameters?: T,
+  connect?: typeof preactConnect,
+) {
+  router = state<RouterState<T>>({
+    // Configuration.
+    initialRoute, // First rendered if URL empty.
+    homeRoute: homeRoute ?? initialRoute, // Home route where URL === '/'.
     // State
-    initialRoute: initialRoute ?? Object.keys(pages)[0] ?? '', // Use the first page as the initial route if not provided.
-    pages,
     route: pathnameToRoute() ?? initialRoute ?? '',
-    parameters: getSearchParameters(),
+    parameters: initialParameters ?? getSearchParameters<T>(),
     // Plugins, connect state to React.
     plugin: connect,
     // Retrieve current state from history, was private.
     listener({ location }) {
-      Router.parameters = Object.assign(getSearchParameters(location), location.state ?? {})
-      Router.route = pathnameToRoute(location) ?? ''
+      // TODO can this lead to unnecessary rerenders?
+      router.parameters = Object.assign(getSearchParameters(location), location.state ?? {})
+      router.route = pathnameToRoute(location) ?? ''
     },
     // Derivations
     get page() {
-      if (process.env.NODE_ENV !== 'production' && (!Router.pages || Router.initialRoute === undefined)) {
+      if (process.env.NODE_ENV !== 'production' && !getInitialRoute()) {
         return ErrorPage(
           <span>
-            No <Code>pages</Code> or <Code>initialRoute</Code> configured, configure with <Code>Router.setPages(pages, initialRoute)</Code>.
+            No <Code>pages</Code> or <Code>initialRoute</Code> configured, configure with <Code>router.setPages(pages, initialRoute)</Code>.
           </span>,
         )
       }
 
-      if (Router.route === '') {
-        return Router.pages[Router.initialRoute] as PageComponent
+      if (router.route === '') {
+        return pages[getInitialRoute()] as PageComponent
       }
 
-      if (!Router.pages[Router.route]) {
-        const userErrorPage = Router.pages['404']
+      if (!pages[router.route]) {
+        const userErrorPage = pages['404']
         if (typeof userErrorPage !== 'undefined') {
-          return Router.pages['404'] as PageComponent
+          return pages['404'] as PageComponent
         }
         return ErrorPage(
           process.env.NODE_ENV === 'production' ? (
             <span>Page not found!</span>
           ) : (
             <span>
-              Route <Code>/{Router.route}</Code> has no associated page!
+              Route <Code>/{router.route}</Code> has no associated page!
             </span>
           ),
         )
       }
-      return Router.pages[Router.route] as PageComponent
+      return pages[router.route] as PageComponent
     },
   })
 
-  const removeListener = history.listen(Router.listener)
+  const removeListener = history.listen(router.listener)
 
-  return { Router, removeListener }
+  return { router: router as RouterState<T>, removeListener }
 }
 
-export function go(route: string, parameters = {}, historyState: object = {}, replace = false) {
-  Router.route = route
-  Router.parameters = parameters
+export function addPage(name: string, markup: PageComponent) {
+  if (!name || typeof name !== 'string') {
+    // biome-ignore lint/suspicious/noConsoleLog: Validation error for user.
+    console.log('Invalid page name provided to addPage(name: string, markup: JSX).')
+    return
+  }
 
-  const searchParameters = Object.keys(parameters).length ? `?${queryString.stringify(parameters)}` : ''
+  pages[name] = markup
 
-  if (route === Router.initialRoute && !Object.keys(parameters).length) {
+  // Use the first page as the initial route if not provided.
+  if (!router.initialRoute) {
+    router.initialRoute = name
+  }
+}
+
+export function go(route: string, parameters?: Parameters, historyState: object = {}, replace = false) {
+  router.route = route
+
+  // NOTE Currently still necessary with epic-state to ensure changes are tracked.
+  if (parameters) {
+    Object.assign(router.parameters, parameters)
+  } else {
+    for (const key of Object.keys(router.parameters)) {
+      delete router.parameters[key]
+    }
+  }
+
+  const hasParameters = Object.keys(router.parameters).length
+  const searchParameters = hasParameters ? `?${queryString.stringify(router.parameters)}` : ''
+
+  if (route === router.initialRoute && !hasParameters) {
     // biome-ignore lint/style/noParameterAssign: Existing logic, might be improved.
     route = ''
   }
@@ -175,24 +211,26 @@ export function forward() {
 }
 
 export function initial() {
-  Router.route = Router.initialRoute
-  history.push(writePath(Router.route))
+  router.route = getInitialRoute()
+  history.push(writePath(router.route))
 }
 
 export function reset() {
-  Router.pages = {}
-  Router.initialRoute = ''
-  Router.route = ''
+  for (const key of Object.keys(pages)) {
+    delete pages[key]
+  }
+  router.initialRoute = ''
+  router.route = ''
 }
 
 export function route() {
-  return Router.route
+  return router.route
 }
 
-export function addPage(route: string, component: PageComponent) {
-  Router.pages[route] = component
+export function parameters() {
+  return router.parameters
 }
 
 export function Page(props: ComponentPropsWithoutRef<'div'>): JSX.Element {
-  return <Router.page {...props} {...Router.parameters} />
+  return <router.page {...props} router={router} />
 }
