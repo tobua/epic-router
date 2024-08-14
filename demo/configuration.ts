@@ -20,7 +20,6 @@ export const rsbuild = defineConfig({
       resolve: {
         alias: {
           react: 'epic-jsx',
-          'react-dom': 'epic-jsx',
           'react/jsx-runtime': 'epic-jsx',
           'react/jsx-dev-runtime': 'epic-jsx',
         },
@@ -29,7 +28,14 @@ export const rsbuild = defineConfig({
   },
 })
 
-export const gitignore = 'recommended'
+export const gitignore = 'bundle'
+export const vscode = 'biome'
+export const biome = {
+  extends: 'recommended',
+  files: {
+    ignore: ['rsbuild.config.ts'],
+  },
+}
 
 export const typescript = {
   extends: 'web',

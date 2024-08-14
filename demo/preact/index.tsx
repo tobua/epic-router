@@ -38,6 +38,9 @@ const Button = ({ text, onClick }) => (
 render(
   <Exmpl title="epic-router Demo" npm="epic-router" github="tobua/epic-router">
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <p>
+        Uses <span style={{ fontWeight: 'bold'}}>preact</span> for rendering.
+      </p>
       <div style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
         <Button text="← Back" onClick={() => back()} />
         <Button text="Forward →" onClick={() => forward()} />

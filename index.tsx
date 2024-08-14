@@ -1,5 +1,4 @@
-import { state } from 'epic-state'
-import type { connect as preactConnect } from 'epic-state/preact'
+import { type Plugin, state } from 'epic-state'
 import { createBrowserHistory, createMemoryHistory } from 'history'
 import queryString from 'query-string'
 import type { ComponentPropsWithoutRef, JSX } from 'react'
@@ -20,7 +19,6 @@ const createHistory = () => {
 
 export const history = createHistory()
 export const getRouter = () => router
-
 export type WithRouter<T extends object> = { router: { route: string; parameters: T } }
 
 const removeLeadingSlash = (path: string) => path.replace(/^\/*/, '')
@@ -100,7 +98,7 @@ export function configure<T extends Parameters>(
   initialRoute?: string,
   homeRoute?: string,
   initialParameters?: T,
-  connect?: typeof preactConnect,
+  connect?: Plugin<string[]>,
 ) {
   router = state<RouterState<T>>({
     // Configuration.
