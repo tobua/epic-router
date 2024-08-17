@@ -46,6 +46,7 @@ test('Sets up and runs the router.', () => {
   const OverviewMarkup = render(<Overview />).serialized
   const AboutMarkup = render(<About />).serialized
   const Custom404Markup = render(<Custom404 />).serialized
+  const StaticMarkup = render(<p>Hello</p>).serialized
   const ArticleIdMarkup = {
     5: render(<p>Article: 5</p>).serialized,
     6: render(<p>Article: 6</p>).serialized,
@@ -70,6 +71,12 @@ test('Sets up and runs the router.', () => {
   batch()
   expect(serializeElement()).toEqual(OverviewMarkup)
   expect(history.location.pathname).toEqual('/')
+
+  go('static')
+  batch()
+  expect(serializeElement()).toEqual(StaticMarkup)
+  expect(router.route).toBe('static')
+  expect(history.location.pathname).toEqual('/static')
 
   go('article', { id: 5 })
   batch()

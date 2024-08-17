@@ -1,7 +1,7 @@
 import { type Plugin, state } from 'epic-state'
 import { createBrowserHistory, createMemoryHistory } from 'history'
 import queryString from 'query-string'
-import type { ComponentPropsWithoutRef, JSX } from 'react'
+import type { ComponentPropsWithoutRef, JSX, ReactElement } from 'react'
 import join from 'url-join'
 import type { PageComponent, Pages, Parameters, RouterState } from './types'
 
@@ -94,12 +94,7 @@ function writePath(route: string) {
 const getInitialRoute = () => (router.initialRoute || Object.keys(pages)[0]) ?? ''
 const getHomeRoute = () => (router.homeRoute || Object.keys(pages)[0]) ?? ''
 
-export function configure<T extends Parameters>(
-  initialRoute?: string,
-  homeRoute?: string,
-  initialParameters?: T,
-  connect?: Plugin<string[]>,
-) {
+export function configure<T extends Parameters>(initialRoute?: string, homeRoute?: string, initialParameters?: T, connect?: Plugin) {
   router = state<RouterState<T>>({
     // Configuration.
     initialRoute, // First rendered if URL empty.
@@ -229,6 +224,11 @@ export function parameters() {
   return router.parameters
 }
 
-export function Page(props: ComponentPropsWithoutRef<'div'>): JSX.Element {
-  return <router.page {...props} router={router} />
+export function Page(props: ComponentPropsWithoutRef<'div'>) {
+  const Page = router.page
+  if (typeof Page !== 'function') {
+    return Page as ReactElement
+  }
+  // biome-ignore lint/suspicious/noExplicitAny: Need to convert epic-jsx JSX to a namespace.
+  return (<Page {...props} router={router} />) as any
 }

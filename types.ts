@@ -1,9 +1,9 @@
 import type { connect as preactConnect } from 'epic-state/preact'
 import type { Listener } from 'history'
-import type { FC } from 'react'
+import type { FunctionComponent, ReactElement } from 'react'
 
 // biome-ignore lint/suspicious/noExplicitAny: Generic react component.
-export type PageComponent = FC<any>
+export type PageComponent = FunctionComponent<any> | ReactElement
 export type Pages = { [key: string]: PageComponent }
 export type Parameters = Record<string, string | number>
 
