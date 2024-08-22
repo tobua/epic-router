@@ -1,4 +1,4 @@
-import { Page, addPage, back, configure, go, forward } from 'epic-router'
+import { Page, addPage, back, configure, forward, go } from 'epic-router'
 import { connect } from 'epic-state/preact'
 import { Exmpl } from 'exmpl'
 import { render } from 'preact'
@@ -39,7 +39,7 @@ render(
   <Exmpl title="epic-router Demo" npm="epic-router" github="tobua/epic-router">
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <p>
-        Uses <span style={{ fontWeight: 'bold'}}>preact</span> for rendering.
+        Uses <span style={{ fontWeight: 'bold' }}>preact</span> for rendering.
       </p>
       <div style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
         <Button text="← Back" onClick={() => back()} />

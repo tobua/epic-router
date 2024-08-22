@@ -1,7 +1,7 @@
 import { type Plugin, state } from 'epic-state'
 import { createBrowserHistory, createMemoryHistory } from 'history'
 import queryString from 'query-string'
-import type { ComponentPropsWithoutRef, JSX, ReactElement } from 'react'
+import type { ComponentPropsWithoutRef, JSX, MouseEventHandler, ReactElement } from 'react'
 import join from 'url-join'
 import type { PageComponent, Pages, Parameters, RouterState } from './types'
 
@@ -106,9 +106,15 @@ export function configure<T extends Parameters>(initialRoute?: string, homeRoute
     plugin: connect,
     // Retrieve current state from history, was private.
     listener({ location }) {
-      // TODO can this lead to unnecessary rerenders?
-      router.parameters = Object.assign(getSearchParameters(location), location.state ?? {})
-      router.route = pathnameToRoute(location) ?? ''
+      const route = pathnameToRoute(location) ?? getInitialRoute()
+      const parameters = Object.assign(getSearchParameters(location), location.state ?? {})
+      if (router.parameters !== parameters) {
+        // TODO implement deep object compare in epic-jsx.
+        // router.parameters = Object.assign(getSearchParameters(location), location.state ?? {})
+      }
+      if (router.route !== route) {
+        router.route = route
+      }
     },
     // Derivations
     get page() {
@@ -163,20 +169,12 @@ export function addPage(name: string, markup: PageComponent) {
   }
 }
 
-export function go(route: string, parameters?: Parameters, historyState: object = {}, replace = false) {
+export function go(route: string, parameters: Parameters = {}, historyState: object = {}, replace = false) {
   router.route = route
+  router.parameters = parameters
 
-  // NOTE Currently still necessary with epic-state to ensure changes are tracked.
-  if (parameters) {
-    Object.assign(router.parameters, parameters)
-  } else {
-    for (const key of Object.keys(router.parameters)) {
-      delete router.parameters[key]
-    }
-  }
-
-  const hasParameters = Object.keys(router.parameters).length
-  const searchParameters = hasParameters ? `?${queryString.stringify(router.parameters)}` : ''
+  const hasParameters = Object.keys(parameters).length
+  const searchParameters = hasParameters ? `?${queryString.stringify(parameters)}` : ''
 
   if (route === router.initialRoute && !hasParameters) {
     // biome-ignore lint/style/noParameterAssign: Existing logic, might be improved.
@@ -201,6 +199,14 @@ export function back() {
 
 export function forward() {
   history.forward()
+}
+
+// <a href="/" onClick={click('overview')}>Homepage</a>
+export function click(route: string, parameters?: Parameters) {
+  return ((event) => {
+    event.preventDefault()
+    go(route, parameters)
+  }) as MouseEventHandler<HTMLAnchorElement>
 }
 
 export function initial() {

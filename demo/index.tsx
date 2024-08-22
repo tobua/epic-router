@@ -5,6 +5,7 @@ import { Exmpl } from 'exmpl'
 import { About } from './page/About'
 import { Article } from './page/Article'
 import { Overview } from './page/Overview'
+import { Footer } from './Footer'
 
 // TODO not working with globally registered plugin.
 // plugin(connect)
@@ -20,7 +21,7 @@ const Nested = () => (
       style={{
         textDecoration: 'none',
         fontWeight: 'bold',
-        color: 'black'
+        color: 'black',
       }}
       onClick={(event) => {
         event.preventDefault()
@@ -61,7 +62,7 @@ render(
   <Exmpl title="epic-router Demo" npm="epic-router" github="tobua/epic-router">
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <p>
-        Uses <span style={{ fontWeight: 'bold'}}>epic-jsx</span> for rendering.
+        Uses <span style={{ fontWeight: 'bold' }}>epic-jsx</span> for rendering.
       </p>
       <div style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
         <Button text="← Back" onClick={() => back()} />
@@ -77,6 +78,7 @@ render(
         <Button text="Missing Page" onClick={() => go('missing')} />
       </div>
       <Page />
+      <Footer />
     </div>
   </Exmpl>,
 )

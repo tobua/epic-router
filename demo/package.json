@@ -1,17 +1,18 @@
 {
   "name": "demo",
   "scripts": {
+    "check": "biome check --write .",
     "start": "rsbuild dev --open",
     "types": "tsc"
   },
   "dependencies": {
-    "@rsbuild/core": "^1.0.1-beta.14",
-    "@rsbuild/plugin-react": "^1.0.1-beta.14",
+    "@rsbuild/core": "^1.0.1-beta.15",
+    "@rsbuild/plugin-react": "^1.0.1-beta.15",
     "epic-jsx": "^0.9.3",
-    "epic-state": "^0.10.0",
+    "epic-state": "^0.12.0",
     "exmpl": "^3.1.0",
     "typescript": "^5.5.4",
-    "zero-configuration": "^0.17.2"
+    "zero-configuration": "^0.17.3"
   },
   "localDependencies": {
     "epic-router": ".."
