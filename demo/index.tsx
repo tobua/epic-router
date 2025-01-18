@@ -2,10 +2,10 @@ import { render } from 'epic-jsx'
 import { Page, addPage, back, configure, forward, go, initial } from 'epic-router'
 import { connect } from 'epic-state/connect'
 import { Exmpl } from 'exmpl'
+import { Footer } from './Footer'
 import { About } from './page/About'
 import { Article } from './page/Article'
 import { Overview } from './page/Overview'
-import { Footer } from './Footer'
 
 // TODO not working with globally registered plugin.
 // plugin(connect)

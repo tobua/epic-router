@@ -1,9 +1,12 @@
 import { type Plugin, state } from 'epic-state'
 import { createBrowserHistory, createMemoryHistory } from 'history'
+import { create } from 'logua'
 import queryString from 'query-string'
 import type { ComponentPropsWithoutRef, JSX, MouseEventHandler, ReactElement } from 'react'
 import join from 'url-join'
 import type { PageComponent, Pages, Parameters, RouterState } from './types'
+
+export const log = create('epic-router', 'yellow')
 
 let router: RouterState<Parameters> = {} as RouterState<Parameters>
 const pages: Pages = {}
@@ -21,7 +24,8 @@ export const history = createHistory()
 export const getRouter = () => router
 export type WithRouter<T extends object> = { router: { route: string; parameters: T } }
 
-const removeLeadingSlash = (path: string) => path.replace(/^\/*/, '')
+const removeSlashRegex = /^\/*/
+const removeLeadingSlash = (path: string) => path.replace(removeSlashRegex, '')
 
 function Code({ children }: { children: string | string[] }) {
   return (
@@ -156,8 +160,7 @@ export function configure<T extends Parameters>(initialRoute?: string, homeRoute
 
 export function addPage(name: string, markup: PageComponent) {
   if (!name || typeof name !== 'string') {
-    // biome-ignore lint/suspicious/noConsoleLog: Validation error for user.
-    console.log('Invalid page name provided to addPage(name: string, markup: JSX).')
+    log('Invalid page name provided to addPage(name: string, markup: JSX).', 'warning')
     return
   }
 
