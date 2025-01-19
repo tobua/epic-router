@@ -1,5 +1,5 @@
 import { render } from 'epic-jsx'
-import { Page, addPage, back, configure, forward, go, initial } from 'epic-router'
+import { Page, addPage, back, configure, forward, go, initial, onNavigate } from 'epic-router'
 import { connect } from 'epic-state/connect'
 import { Exmpl } from 'exmpl'
 import { Footer } from './Footer'
@@ -9,6 +9,10 @@ import { Overview } from './page/Overview'
 
 // TODO not working with globally registered plugin.
 // plugin(connect)
+
+onNavigate((route, parameters, initial) => {
+  console.log('onNavigate:', route, parameters.id, initial)
+})
 
 const { router } = configure<{ id: number }>('overview', undefined, undefined, connect)
 

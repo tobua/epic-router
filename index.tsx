@@ -4,7 +4,7 @@ import { create } from 'logua'
 import queryString from 'query-string'
 import type { ComponentPropsWithoutRef, JSX, MouseEventHandler, ReactElement } from 'react'
 import join from 'url-join'
-import type { PageComponent, Pages, Parameters, RouterState } from './types'
+import type { NavigateListener, PageComponent, Pages, Parameters, RouterState } from './types'
 
 export const log = create('epic-router', 'yellow')
 
@@ -23,6 +23,18 @@ const createHistory = () => {
 export const history = createHistory()
 export const getRouter = () => router
 export type WithRouter<T extends object> = { router: { route: string; parameters: T } }
+
+const navigateListeners: NavigateListener[] = []
+
+export function onNavigate(listener: NavigateListener) {
+  navigateListeners.push(listener)
+}
+
+function notifyNavigateListeners(initial = false) {
+  for (const listener of navigateListeners) {
+    listener(router.route, router.parameters, initial)
+  }
+}
 
 const removeSlashRegex = /^\/*/
 const removeLeadingSlash = (path: string) => path.replace(removeSlashRegex, '')
@@ -155,6 +167,8 @@ export function configure<T extends Parameters>(initialRoute?: string, homeRoute
 
   const removeListener = history.listen(router.listener)
 
+  notifyNavigateListeners(true)
+
   return { router: router as RouterState<T>, removeListener }
 }
 
@@ -194,14 +208,18 @@ export function go(route: string, parameters: Parameters = {}, historyState: obj
     },
     historyState,
   )
+
+  notifyNavigateListeners()
 }
 
 export function back() {
   history.back()
+  notifyNavigateListeners()
 }
 
 export function forward() {
   history.forward()
+  notifyNavigateListeners()
 }
 
 // <a href="/" onClick={click('overview')}>Homepage</a>
@@ -215,6 +233,7 @@ export function click(route: string, parameters?: Parameters) {
 export function initial() {
   router.route = getInitialRoute()
   history.push(writePath(router.route))
+  notifyNavigateListeners()
 }
 
 export function reset() {

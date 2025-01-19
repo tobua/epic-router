@@ -16,3 +16,5 @@ export type RouterState<T extends Parameters> = {
   plugin?: typeof preactConnect
   listener: Listener
 }
+
+export type NavigateListener = (route: string, parameters: Parameters, initial: boolean) => void
