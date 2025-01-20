@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@happy-dom/global-registrator": "^16.6.0",
+    "@happy-dom/global-registrator": "^16.7.0",
     "@testing-library/preact": "^3.2.4",
     "@types/bun": "^1.1.17",
     "@types/history": "^5.0.0",

@@ -6,7 +6,7 @@
     "types": "tsc"
   },
   "dependencies": {
-    "@rsbuild/core": "^1.1.13",
+    "@rsbuild/core": "^1.1.14",
     "@rsbuild/plugin-react": "^1.1.0",
     "epic-jsx": "^0.9.5",
     "epic-state": "^0.14.0",

@@ -22,7 +22,9 @@ const createHistory = () => {
 
 export const history = createHistory()
 export const getRouter = () => router
-export type WithRouter<T extends object> = { router: { route: string; parameters: T } }
+export type WithRouter<T extends object> = {
+  router: { route: string; parameters: T }
+}
 
 const navigateListeners: NavigateListener[] = []
 
@@ -167,7 +169,9 @@ export function configure<T extends Parameters>(initialRoute?: string, homeRoute
 
   const removeListener = history.listen(router.listener)
 
-  notifyNavigateListeners(true)
+  setTimeout(() => {
+    notifyNavigateListeners(true)
+  }, 0)
 
   return { router: router as RouterState<T>, removeListener }
 }
