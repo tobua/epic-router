@@ -2,7 +2,7 @@ import { type Plugin, state } from 'epic-state'
 import { createBrowserHistory, createMemoryHistory } from 'history'
 import { create } from 'logua'
 import queryString from 'query-string'
-import type { ComponentPropsWithoutRef, JSX, MouseEventHandler, ReactElement } from 'react'
+import type React from 'react'
 import join from 'url-join'
 import type { NavigateListener, PageComponent, Pages, Parameters, RouterState } from './types'
 
@@ -59,7 +59,7 @@ function Code({ children }: { children: string | string[] }) {
   )
 }
 
-function ErrorPage(message: JSX.Element): PageComponent {
+function ErrorPage(message: React.JSX.Element): PageComponent {
   return () => <div style={{ color: 'red', fontWeight: 'bold' }}>{message}</div>
 }
 
@@ -231,7 +231,7 @@ export function click(route: string, parameters?: Parameters) {
   return ((event) => {
     event.preventDefault()
     go(route, parameters)
-  }) as MouseEventHandler<HTMLAnchorElement>
+  }) as React.MouseEventHandler<HTMLAnchorElement>
 }
 
 export function initial() {
@@ -256,10 +256,10 @@ export function parameters() {
   return router.parameters
 }
 
-export function Page(props: ComponentPropsWithoutRef<'div'>) {
+export function Page(props: React.ComponentPropsWithoutRef<'div'>) {
   const Page = router.page
   if (typeof Page !== 'function') {
-    return Page as ReactElement
+    return Page as React.ReactElement
   }
   // biome-ignore lint/suspicious/noExplicitAny: Need to convert epic-jsx JSX to a namespace.
   return (<Page {...props} router={router} />) as any

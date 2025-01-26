@@ -21,7 +21,7 @@ test('Sets up and runs the router.', () => {
   const Custom404 = () => <p>Page not found</p>
   const Article = ({ router: localRouter }: WithRouter<{ id: number }>) => <p>Article: {localRouter.parameters.id}</p>
   const ArticleRouterProps = () => <p>Article: {router.parameters.id}</p>
-  const FragmentPage = (name: string, count: number) => (
+  const FragmentPage = ({ name, count }: { name: string; count: number }) => (
     <>
       <p>{name}</p>
       <span>{count}</span>
