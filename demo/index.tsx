@@ -1,5 +1,6 @@
 import { render } from 'epic-jsx'
 import { Page, addPage, back, configure, forward, go, initial, onNavigate } from 'epic-router'
+import { plugin } from 'epic-state'
 import { connect } from 'epic-state/connect'
 import { Exmpl } from 'exmpl'
 import { Footer } from './Footer'
@@ -7,14 +8,13 @@ import { About } from './page/About'
 import { Article } from './page/Article'
 import { Overview } from './page/Overview'
 
-// TODO not working with globally registered plugin.
-// plugin(connect)
+plugin(connect)
 
 onNavigate((route, parameters, initial) => {
   console.log('onNavigate:', route, parameters.id, initial)
 })
 
-const { router } = configure<{ id: number }>('overview', undefined, undefined, connect)
+const { router } = configure<{ id: number }>('overview')
 
 // TODO epic-jsx bug, link will not be removed when a Fragment is used here instead of the <div>
 const Nested = () => (
@@ -40,6 +40,7 @@ const Custom404 = () => <span>Page not found!</span>
 
 addPage('overview', Overview)
 addPage('about', About)
+addPage('dynamic', { lazy: () => import('./page/Lazy'), loading: <p>Loading...</p> })
 addPage('article', Article)
 addPage('nested/overview', Nested)
 addPage('404', Custom404)
@@ -75,6 +76,7 @@ render(
       <div style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
         <Button text="Overview" onClick={() => go('overview')} />
         <Button text="About" onClick={() => go('about')} />
+        <Button text="Lazy Loaded" onClick={() => go('dynamic')} />
         <Button text="Article 1" onClick={() => go('article', { id: 1 })} />
         <Button text="Article 2" onClick={() => go('article', { id: 2 })} />
         <Button text="Article 3" onClick={() => go('article', { id: 3 })} />

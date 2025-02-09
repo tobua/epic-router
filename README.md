@@ -35,6 +35,8 @@ const Article = () => <p>Article: {router.parameters.id}</p>
 addPage('overview', Overview)
 addPage('nested/about', About)
 addPage('article', Article)
+// Lazy loaded page.
+addPage('dynamic', { lazy: () => import('./page/Lazy'), loading: <p>Loading...</p> })
 // Custom 404 page for missing routes.
 addPage('404', () => <p>Not found!</p>)
 

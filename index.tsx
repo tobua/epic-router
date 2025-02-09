@@ -4,7 +4,7 @@ import { create } from 'logua'
 import queryString from 'query-string'
 import type React from 'react'
 import join from 'url-join'
-import type { NavigateListener, PageComponent, Pages, Parameters, RouterState } from './types'
+import type { GenericFunctionComponent, LazyComponent, NavigateListener, PageComponent, Pages, Parameters, RouterState } from './types'
 
 export const log = create('epic-router', 'yellow')
 
@@ -134,6 +134,7 @@ export function configure<T extends Parameters>(initialRoute?: string, homeRoute
         router.route = route
       }
     },
+    loading: true,
     // Derivations
     get page() {
       if (process.env.NODE_ENV !== 'production' && !getInitialRoute()) {
@@ -176,7 +177,7 @@ export function configure<T extends Parameters>(initialRoute?: string, homeRoute
   return { router: router as RouterState<T>, removeListener }
 }
 
-export function addPage(name: string, markup: PageComponent) {
+export function addPage(name: string, markup: PageComponent | LazyComponent) {
   if (!name || typeof name !== 'string') {
     log('Invalid page name provided to addPage(name: string, markup: JSX).', 'warning')
     return
@@ -231,7 +232,7 @@ export function click(route: string, parameters?: Parameters) {
   return ((event) => {
     event.preventDefault()
     go(route, parameters)
-  }) as React.MouseEventHandler<HTMLAnchorElement>
+  }) as React.MouseEventHandler<Element>
 }
 
 export function initial() {
@@ -256,11 +257,36 @@ export function parameters() {
   return router.parameters
 }
 
+function DynamicImport({ page, props }: { page: LazyComponent; props: React.ComponentPropsWithoutRef<'div'> }) {
+  if (page._component) {
+    return <page._component {...props} router={router} />
+  }
+
+  page.lazy().then((module) => {
+    page._component = module.default
+    router.loading = false
+  })
+
+  if (router.loading) {
+    return page.loading ?? <p>Loading...!</p>
+  }
+
+  const Component = page._component as unknown as GenericFunctionComponent
+
+  if (Component) {
+    return <Component {...props} router={router} />
+  }
+
+  return <p>Failed to dynamically load component, make sure it has a default export.</p>
+}
+
 export function Page(props: React.ComponentPropsWithoutRef<'div'>) {
   const Page = router.page
   if (typeof Page !== 'function') {
-    return Page as React.ReactElement
+    if (typeof Page === 'object' && Object.hasOwn(Page, 'lazy')) {
+      return <DynamicImport page={Page as LazyComponent} props={props} />
+    }
+    return Page as React.ReactElement // Rendered JSX element.
   }
-  // biome-ignore lint/suspicious/noExplicitAny: Need to convert epic-jsx JSX to a namespace.
-  return (<Page {...props} router={router} />) as any
+  return <Page {...props} router={router} />
 }

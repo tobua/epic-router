@@ -5,13 +5,13 @@
     "types": "tsc"
   },
   "dependencies": {
-    "@rsbuild/core": "^1.1.13",
+    "@rsbuild/core": "^1.2.4",
     "@rsbuild/plugin-react": "^1.1.0",
-    "epic-state": "^0.14.0",
+    "epic-state": "^0.15.6",
     "exmpl": "^3.1.0",
     "preact": "^10.25.4",
     "typescript": "^5.7.3",
-    "zero-configuration": "^0.17.6"
+    "zero-configuration": "^0.18.0"
   },
   "localDependencies": {
     "epic-router": "../.."

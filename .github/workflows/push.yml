@@ -15,7 +15,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - run: bun check
-      # - run: bun types
+      - run: bun types
       - run: bun run test # Requires copy of source files.
       - name: 📢 Release
         uses: tobua/release-npm-action@v3
