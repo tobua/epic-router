@@ -1,7 +1,7 @@
 import '../setup-dom'
 import { expect, mock, test } from 'bun:test'
 import { render, serializeElement } from 'epic-jsx/test'
-import { batch, plugin } from 'epic-state'
+import { batch, plugin, state } from 'epic-state'
 import { connect } from 'epic-state/connect'
 // Import from local folder to avoid using entry tsconfig (different JSX configrations required).
 import { Page, type WithRouter, addPage, back, configure, go, history, reset } from './source/index'
@@ -137,4 +137,71 @@ test('Props handed to Page can be accessed from pages.', () => {
   batch()
   expect(serializeElement()).toEqual(ErrorMarkup)
   expect(errorMock.mock.calls.length).toEqual(1)
+})
+
+test('No rendering issues when switching pages.', () => {
+  reset()
+  go('posts')
+
+  const { router } = configure<{ id: number }>('posts')
+  const State = state({ loading: true })
+
+  const Posts = () => {
+    if (State.loading) {
+      return <p id="loading">Loading...</p>
+    }
+    return <div id="posts">Posts</div>
+  }
+  const Post = () => <p id="post">Post #{router.parameters.id}</p>
+  function About() {
+    return <p>About</p>
+  }
+
+  function Static({ children }) {
+    return <main>{children}</main>
+  }
+
+  // function Static({ children }) {
+  //   return (
+  //     <div>
+  //       <header><p>Header</p></header>
+  //       <main>{children}</main>
+  //       <footer><p>Foorter</p></footer>
+  //     </div>
+  //   )
+  // }
+
+  addPage('posts', Posts)
+  addPage('post', Post)
+  addPage('about', About)
+
+  const { serialized } = render(
+    <Static>
+      <Page />
+    </Static>,
+  )
+
+  // expect(serialized).toEqual(
+  //   '<body><div><header><p>Header</p></header><main><p>Loading...</p></main><footer><p>Footer</p></footer></div></body>',
+  // )
+
+  expect(serialized).toEqual('<body><main><p id="loading">Loading...</p></main></body>')
+
+  State.loading = false
+  batch()
+
+  // expect(serializeElement()).toEqual(
+  //   '<body><div><header><p>Header</p></header><main><p>Posts</p></main><footer><p>Footer</p></footer></div></body>',
+  // )
+
+  expect(serializeElement()).toEqual('<body><main><div id="posts">Posts</div></main></body>')
+
+  go('post', { id: 3 })
+  batch()
+
+  // expect(serializeElement()).toEqual(
+  //   '<body><div><header><p>Header</p></header><main><p>Post #3</p></main><footer><p>Footer</p></footer></div></body>',
+  //)
+
+  expect(serializeElement()).toEqual('<body><main><p id="post">Post #3</p></main></body>')
 })
