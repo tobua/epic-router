@@ -1,4 +1,4 @@
-import { Page, addPage, back, configure, forward, go } from 'epic-router'
+import { addPage, back, configure, forward, go, Page } from 'epic-router'
 import { connect } from 'epic-state/preact'
 import { Exmpl } from 'exmpl'
 import { render } from 'preact'

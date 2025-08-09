@@ -2,7 +2,7 @@ import type { connect as preactConnect } from 'epic-state/preact'
 import type { Listener } from 'history'
 import type React from 'react'
 
-// biome-ignore lint/suspicious/noExplicitAny: Generic react component.
+// biome-ignore lint/suspicious/noExplicitAny: Required to make the type generic.
 export type GenericFunctionComponent = React.FunctionComponent<any>
 export type PageComponent = GenericFunctionComponent | React.JSX.Element
 export type LazyComponent = {

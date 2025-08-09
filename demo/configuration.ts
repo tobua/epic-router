@@ -5,7 +5,7 @@ export const rsbuild = defineConfig({
   plugins: [pluginReact()],
   source: {
     entry: {
-      index: './index.tsx',
+      index: './index.tsx', // TODO rendering.tsx
     },
     define: {
       'process.env.PUBLIC_URL': '"/"',
@@ -32,12 +32,21 @@ export const gitignore = 'bundle'
 export const vscode = 'biome'
 export const biome = {
   extends: 'recommended',
-  files: {
-    ignore: ['rsbuild.config.ts'],
+  linter: {
+    rules: {
+      style: {
+        useComponentExportOnlyModules: 'off',
+      },
+      correctness: {
+        noUndeclaredDependencies: 'off',
+      },
+    },
   },
+  root: false,
 }
 
 export const typescript = {
   extends: 'web',
   files: ['index.tsx'],
+  exclude: ['preact'],
 }

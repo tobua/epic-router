@@ -1,5 +1,5 @@
 import { render } from 'epic-jsx'
-import { Page, addPage, back, configure, forward, go, initial, onNavigate } from 'epic-router'
+import { addPage, back, configure, forward, go, initial, onNavigate, Page } from 'epic-router'
 import { plugin } from 'epic-state'
 import { connect } from 'epic-state/connect'
 import { Exmpl } from 'exmpl'
@@ -10,8 +10,9 @@ import { Overview } from './page/Overview'
 
 plugin(connect)
 
-onNavigate((route, parameters, initial) => {
-  console.log('onNavigate:', route, parameters.id, initial)
+onNavigate((route, parameters, initialRoute) => {
+  // biome-ignore lint/suspicious/noConsole: User feedback for demo.
+  console.log('onNavigate:', route, parameters.id, initialRoute)
 })
 
 const { router } = configure<{ id: number }>('overview')

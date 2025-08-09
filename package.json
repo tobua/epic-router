@@ -7,32 +7,33 @@
   "license": "MIT",
   "author": "Matthias Giger",
   "scripts": {
-    "check": "biome check --write . && biome check --write --config-path=test ./test/*",
+    "check": "biome check --write .",
     "test": "bun test --preload ./test/copy-source.ts",
     "types": "bun test/copy-source.ts && tsc && tsc --project ./test/epic/tsconfig.json && tsc --project ./test/preact/tsconfig.json"
   },
   "workspaces": [
-    "demo"
+    "demo",
+    "demo-preact"
   ],
   "dependencies": {
-    "epic-state": "^0.15.6",
+    "epic-state": "^0.17.3",
     "history": "^5.3.0",
     "logua": "^3.0.3",
-    "query-string": "^9.1.1",
+    "query-string": "^9.2.2",
     "url-join": "^5.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@happy-dom/global-registrator": "^17.1.0",
+    "@biomejs/biome": "^2.1.4",
+    "@happy-dom/global-registrator": "^18.0.1",
     "@testing-library/preact": "^3.2.4",
-    "@types/bun": "^1.2.2",
+    "@types/bun": "^1.2.19",
     "@types/history": "^5.0.0",
-    "@types/react": "^19.0.9",
-    "epic-jsx": "^0.10.4",
-    "preact": "^10.26.0",
-    "react": "^19.0.0",
-    "typescript": "^5.7.3",
-    "zero-configuration": "^0.18.1"
+    "@types/react": "^19.1.9",
+    "epic-jsx": "^0.11.3",
+    "preact": "^10.27.0",
+    "react": "^19.1.1",
+    "typescript": "^5.9.2",
+    "zero-configuration": "^1.0.5"
   },
   "peerDependencies": {
     "epic-jsx": ">= 0.7",
@@ -84,22 +85,29 @@
           "rules": {
             "correctness": {
               "noNodejsModules": "off"
+            },
+            "style": {
+              "useComponentExportOnlyModules": "off"
             }
           }
         },
         "files": {
-          "ignore": [
-            "demo",
-            "test"
+          "includes": [
+            "**/*",
+            "!demo/**",
+            "!demo-preact/**",
+            "!test/**"
           ]
         }
       },
       {
         "folder": "test",
         "extends": "test",
+        "root": false,
         "files": {
-          "ignore": [
-            "source"
+          "includes": [
+            "**/*",
+            "!**/source/**"
           ]
         }
       }

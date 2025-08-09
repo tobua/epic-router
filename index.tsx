@@ -32,9 +32,9 @@ export function onNavigate(listener: NavigateListener) {
   navigateListeners.push(listener)
 }
 
-function notifyNavigateListeners(initial = false) {
+function notifyNavigateListeners(initialRender = false) {
   for (const listener of navigateListeners) {
-    listener(router.route, router.parameters, initial)
+    listener(router.route, router.parameters, initialRender)
   }
 }
 
@@ -89,24 +89,24 @@ function getSearchParameters<T extends Parameters>(location = history.location) 
   return queryString.parse(search) as T
 }
 
-function writePath(route: string) {
+function writePath(currentRoute: string) {
   const publicUrl = removeLeadingSlash(process.env.PUBLIC_URL ?? '')
 
-  if (route === getHomeRoute()) {
+  if (currentRoute === getHomeRoute()) {
     // biome-ignore lint/style/noParameterAssign: Much easier in this case.
-    route = '/'
+    currentRoute = '/'
   }
 
   if (publicUrl) {
-    return join('/', publicUrl, route)
+    return join('/', publicUrl, currentRoute)
   }
 
   // join will not work properly in this case.
-  if (route === '') {
+  if (currentRoute === '') {
     return '/'
   }
 
-  return join('/', route)
+  return join('/', currentRoute)
 }
 
 const getInitialRoute = () => (router.initialRoute || Object.keys(pages)[0]) ?? ''
@@ -124,14 +124,14 @@ export function configure<T extends Parameters>(initialRoute?: string, homeRoute
     plugin: connect,
     // Retrieve current state from history, was private.
     listener({ location }) {
-      const route = pathnameToRoute(location) ?? getInitialRoute()
-      const parameters = Object.assign(getSearchParameters(location), location.state ?? {})
-      if (router.parameters !== parameters) {
+      const currentRoute = pathnameToRoute(location) ?? getInitialRoute()
+      const currentParameters = Object.assign(getSearchParameters(location), location.state ?? {})
+      if (router.parameters !== currentParameters) {
         // TODO implement deep object compare in epic-jsx.
         // router.parameters = Object.assign(getSearchParameters(location), location.state ?? {})
       }
-      if (router.route !== route) {
-        router.route = route
+      if (router.route !== currentRoute) {
+        router.route = currentRoute
       }
     },
     loading: true,
@@ -191,16 +191,16 @@ export function addPage(name: string, markup: PageComponent | LazyComponent) {
   }
 }
 
-export function go(route: string, parameters: Parameters = {}, historyState: object = {}, replace = false) {
-  router.route = route
-  router.parameters = parameters
+export function go(newRoute: string, newParameters: Parameters = {}, historyState: object = {}, replace = false) {
+  router.route = newRoute
+  router.parameters = newParameters
 
-  const hasParameters = Object.keys(parameters).length
-  const searchParameters = hasParameters ? `?${queryString.stringify(parameters)}` : ''
+  const hasParameters = Object.keys(newParameters).length
+  const searchParameters = hasParameters ? `?${queryString.stringify(newParameters)}` : ''
 
-  if (route === router.initialRoute && !hasParameters) {
+  if (newRoute === router.initialRoute && !hasParameters) {
     // biome-ignore lint/style/noParameterAssign: Existing logic, might be improved.
-    route = ''
+    newRoute = ''
   }
 
   const historyAction = replace ? history.replace : history.push
@@ -209,7 +209,7 @@ export function go(route: string, parameters: Parameters = {}, historyState: obj
     {
       hash: '',
       search: searchParameters,
-      pathname: writePath(route),
+      pathname: writePath(newRoute),
     },
     historyState,
   )
@@ -228,10 +228,10 @@ export function forward() {
 }
 
 // <a href="/" onClick={click('overview')}>Homepage</a>
-export function click(route: string, parameters?: Parameters) {
+export function click(nextRoute: string, nextParameters?: Parameters) {
   return ((event) => {
     event.preventDefault()
-    go(route, parameters)
+    go(nextRoute, nextParameters)
   }) as React.MouseEventHandler<Element>
 }
 
@@ -262,6 +262,7 @@ function DynamicImport({ page, props }: { page: LazyComponent; props: React.Comp
     return <page._component {...props} router={router} />
   }
 
+  // biome-ignore lint/nursery/noFloatingPromises: Doesn't need to be awaited.
   page.lazy().then((module) => {
     page._component = module.default
     router.loading = false
@@ -281,12 +282,12 @@ function DynamicImport({ page, props }: { page: LazyComponent; props: React.Comp
 }
 
 export function Page(props: React.ComponentPropsWithoutRef<'div'>) {
-  const Page = router.page
-  if (typeof Page !== 'function') {
-    if (typeof Page === 'object' && Object.hasOwn(Page, 'lazy')) {
-      return <DynamicImport page={Page as LazyComponent} props={props} />
+  const Component = router.page
+  if (typeof Component !== 'function') {
+    if (typeof Component === 'object' && Object.hasOwn(Component, 'lazy')) {
+      return <DynamicImport page={Component as LazyComponent} props={props} />
     }
-    return Page as React.ReactElement // Rendered JSX element.
+    return Component as React.ReactElement // Rendered JSX element.
   }
-  return <Page {...props} router={router} />
+  return <Component {...props} router={router} />
 }

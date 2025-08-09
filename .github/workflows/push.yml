@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-test-release:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: write

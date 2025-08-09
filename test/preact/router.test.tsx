@@ -3,7 +3,7 @@ import { expect, mock, test } from 'bun:test'
 import { render } from '@testing-library/preact'
 import { connect } from 'epic-state/preact'
 // Import from local folder to avoid using entry tsconfig (different JSX configrations required).
-import { Page, type WithRouter, addPage, back, configure, go, history, reset } from './source/index'
+import { addPage, back, configure, go, history, Page, reset, type WithRouter } from './source/index'
 
 // Clean up rendered content from other suite.
 document.body.innerHTML = ''
@@ -27,7 +27,7 @@ test('Sets up and runs the router.', async () => {
     return <p>About</p>
   }
   const Custom404 = () => <p>Page not found</p>
-  const Article = ({ router }: WithRouter<{ id: number }>) => <p>Article: {router.parameters.id}</p>
+  const Article = ({ router: currentRouter }: WithRouter<{ id: number }>) => <p>Article: {currentRouter.parameters.id}</p>
   const ArticleRouterProps = () => <p>Article: {router.parameters.id}</p>
   const FragmentPage = (name: string, count: number) => (
     <>

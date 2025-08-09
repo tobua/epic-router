@@ -1,6 +1,7 @@
 import { execSync } from 'node:child_process'
 import { existsSync, mkdirSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
+import process from 'node:process'
 
 function copySource(folder: string) {
   const rootDirectory = join(process.cwd())

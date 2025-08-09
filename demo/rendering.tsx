@@ -1,11 +1,11 @@
 import { render } from 'epic-jsx'
-import { Page, addPage, configure, go, initial, onNavigate } from 'epic-router'
+import { addPage, configure, go, initial, onNavigate, Page } from 'epic-router'
 import { list, plugin, state } from 'epic-state'
 import { connect } from 'epic-state/connect'
 
 const State = state({
   loading: true,
-  posts: list((post) => post, []),
+  posts: list((post: { id: number; text: string }) => post, []),
 })
 
 setTimeout(() => {
@@ -18,8 +18,9 @@ setTimeout(() => {
 
 plugin(connect)
 
-onNavigate((route, parameters, initial) => {
-  console.log('onNavigate:', route, parameters.id, initial)
+onNavigate((route, parameters, initialRoute) => {
+  // biome-ignore lint/suspicious/noConsole: User feedback for demo.
+  console.log('onNavigate:', route, parameters.id, initialRoute)
   State.loading = true
 
   setTimeout(() => {
@@ -30,7 +31,10 @@ onNavigate((route, parameters, initial) => {
 const { router } = configure<{ id: number }>('posts')
 
 const Posts = () => {
-  if (State.loading) return <p id="loading">Loading...</p>
+  if (State.loading) {
+    return <p id="loading">Loading...</p>
+  }
+
   return (
     <>
       <p id="posts">Posts</p>
@@ -79,6 +83,7 @@ const Button = ({ children, onClick }) => (
       padding: 10,
       cursor: 'pointer',
     }}
+    type="button"
     onClick={onClick}
   >
     {children}
